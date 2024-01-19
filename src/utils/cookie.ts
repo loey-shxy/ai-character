@@ -1,5 +1,4 @@
 import Cookies from 'js-cookie'
-import { Base64 } from 'js-base64'
 
 const MAX_AGE = parseInt(import.meta.env.VITE_APP_REMEMBER_ME_MAX_AGE)
 const AUTH_TOKEN_KEY = import.meta.env.VITE_APP_AUTH_TOKEN_KEY
@@ -14,11 +13,9 @@ export const getTokenKey = () => {
 	return Cookies.get(AUTH_TOKEN_KEY) || localStorage.getItem(AUTH_TOKEN_KEY)
 }
 
-export const setToken = ({ key, token, rememberMe = false, expires }: { [key: string]: any }) => {
+export const setToken = ({ key, token, expires }: { [key: string]: any }) => {
 	const attributes: { expires?: Date } = {}
-	if (rememberMe) {
-		attributes.expires = expires ? expires : new Date(Date.now() + MAX_AGE * 60 * 60 * 1000)
-	}
+	attributes.expires = expires ? expires : new Date(Date.now() + MAX_AGE * 60 * 60 * 1000)
 	Cookies.set(AUTH_TOKEN_KEY, key, attributes)
 	localStorage.setItem(AUTH_TOKEN_KEY, key)
 	Cookies.set(AUTH_TOKEN_VALUE, token, attributes)
@@ -26,7 +23,7 @@ export const setToken = ({ key, token, rememberMe = false, expires }: { [key: st
 }
 
 export const getToken = () => {
-	return Cookies.get(AUTH_TOKEN_VALUE) || localStorage.getItem(AUTH_TOKEN_VALUE)
+	return Cookies.set(AUTH_TOKEN_VALUE) || localStorage.getItem(AUTH_TOKEN_VALUE)
 }
 
 export const removeToken = () => {
@@ -41,10 +38,6 @@ export const removeAuth = () => {
 	removeToken()
 }
 
-export const hasToken = () => {
-	return !isEmpty(getToken())
-}
-
 export const parseToken = (token: string) => {
 	try {
 		const [, bodyEncrypted] = token.split('.')
@@ -57,21 +50,8 @@ export const parseToken = (token: string) => {
 	return null
 }
 
-/**
- * token 是否有效（普通 模式）
- * @returns {boolean} true： 有效；false：无效
- */
-export const isValidToken = () => {
+export const hasToken = () => {
 	return !isEmpty(getToken())
-}
-
-/**
- * token 是否有效（JWT 模式）
- * @returns {boolean} true： 有效；false：无效
- */
-export const isValidTokenJwt = () => {
-	const token = getToken()
-	return !isEmpty(token) && parseToken(token as string) !== null
 }
 
 /**
@@ -90,7 +70,6 @@ export const getUserInfo = () => {
 	}
 	return {}
 }
-
 /**
  * 设置-用户信息
  * @param userInfo {userId:'',userName:''} TODO 暂时 any 还不清楚API到底返回什么值

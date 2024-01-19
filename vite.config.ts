@@ -12,6 +12,22 @@ import dts from 'vite-plugin-dts'
 // https://vitejs.dev/config/
 export default defineConfig(() => {
   return {
+    server: {
+      port: 5000,
+      host: '0.0.0.0',
+      proxy: {
+        '/auth': {
+          target: 'http://onlyfriend.vanas.cloud',
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/\/auth/, ""),
+        },
+        '/api': {
+          target: 'http://onlyfriend.vanas.cloud',
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/\/api/, ""),
+        }
+      }
+    },
     resolve: {
       alias: {
         '@': resolve(__dirname, './src'),

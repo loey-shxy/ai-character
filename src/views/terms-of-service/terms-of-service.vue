@@ -7,7 +7,18 @@
 				<span>Terms of Service of EverAl Limited</span>
 			</p>
 		</div>
-		<div class="terms-service__content"></div>
+		<div class="terms-service__content" v-html="msg"></div>
 	</div>
 </template>
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { ref, onMounted } from 'vue'
+import { termsOfServiceApi } from '@/apis'
+
+const msg = ref('')
+
+// onMounted(async () => {
+// 	const { data, msg, code } = await termsOfServiceApi()
+// 	msg.value = data
+// 	console.log(msg, code)
+// })
+</script>

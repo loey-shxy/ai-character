@@ -5,7 +5,7 @@ module.exports = {
 			propList: ['*'], // 需要转换的属性列表，所有属性
 			selectorBlackList: ['pc'],
 		}),
-		require('postcss-px-to-viewport')({
+		require('postcss-px-to-viewport-8-plugin')({
 			// options
 			unitToConvert: 'px', // (String) 需要转换的单位，默认为"px"
 			viewportWidth: 1920, // (Number) 设计稿的视口宽度，一般是750

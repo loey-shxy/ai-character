@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:test": "vite --mode test",
     "build": "vue-tsc && vite build",
     "preview": "vite preview",
     "prepare": "husky install"
@@ -34,7 +35,9 @@
     "eslint-plugin-prettier": "^5.1.2",
     "eslint-plugin-vue": "^9.19.2",
     "husky": "^8.0.3",
-    "postcss-px-to-viewport": "^1.1.1",
+    "postcss": "^8.4.33",
+    "postcss-loader": "^6.2.1",
+    "postcss-px-to-viewport-8-plugin": "^1.2.3",
     "postcss-pxtorem": "^6.0.0",
     "prettier": "^3.1.1",
     "sass": "^1.69.7",

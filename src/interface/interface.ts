@@ -1,6 +1,27 @@
-export interface SignIn {
-	email: string
+// 登录
+export interface SignInParams {
+	username: string
 	password: string
+	passport: string // GUEST 传 FRONT-GUEST 其他用户传 FRONT
+}
+
+// 注册
+export interface SignUpParams {
+	account: string
+	password: string
+}
+
+// 用户信息
+export interface UserDetail {
+	id: string
+	account: string
+	roles: string[]
+	data: {}
+}
+
+// 留言
+export interface ContactUsParams {
+  msg: string
 }
 
 export interface ResetPassword {
