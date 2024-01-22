@@ -66,10 +66,13 @@ import { ArrowDown } from '@element-plus/icons-vue'
 import { reactive, ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import ContactUs from '@/components/contact-us/contact-us.vue'
-import { DropdownMenu } from '@/interface/interface'
+import { DropdownMenu } from '@/interface'
+import { removeToken, hasToken } from '@/utils/cookie'
 
 const router = useRouter()
-const isLogin = ref(true)
+const isLogin = computed(() => {
+	return hasToken()
+})
 
 const selectSex = ref('female')
 const showSex = computed(() => {
@@ -85,7 +88,7 @@ const dropdownMenu = reactive<DropdownMenu[]>([
 	{ label: 'Subscription', icon: 'subscription-down', path: 'subscription' },
 	{ label: 'Settings', icon: 'setting', path: '' },
 	{ label: 'Contact', icon: 'contact', path: '' },
-	{ label: 'Logout', icon: 'logout', path: 'sign-in' },
+	{ label: 'Logout', icon: 'logout', path: '' },
 ])
 
 const getImg = (icon: string) => {
@@ -109,6 +112,10 @@ const dropdownMenuClick = (menu: DropdownMenu) => {
 	switch (menu.label) {
 		case 'Contact':
 			contactVisible.value = true
+			break
+		case 'Logout':
+			removeToken()
+			toSignIn()
 			break
 		default:
 			break

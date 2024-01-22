@@ -1,15 +1,31 @@
 import es6Promise from 'es6-promise'
-import axios, { AxiosInstance } from 'axios'
-import { hasToken, getToken, getTokenKey } from '@/utils/cookie'
-import { ElMessage } from 'element-plus'
+import axios, { AxiosInstance, AxiosResponse } from 'axios'
+import { hasToken, getToken, removeToken, getGuestToken, hasGuestToken } from '@/utils/cookie'
+import { ElMessage, ElLoading } from 'element-plus'
+import router from '@/router'
+
 es6Promise.polyfill()
 let tokenIsInvalid = false
+
+const loadingOptions = { fullscreen: true, background: 'rgba(0, 0, 0, 0.5)' }
+let loadingTimer: any = null // loading 定时器
+let loadingOpenedCount = 0 // loading 打开次数
+
+/**
+ * @description 响应
+ */
+export interface Response {
+	error?: any
+	code?: string | number
+	data?: any
+	msg: string
+	response: AxiosResponse
+}
 
 // 创建一个 axios 实例
 const instance: AxiosInstance = axios.create({
 	baseURL: '/api',
 	timeout: 60000, // 请求超时时间毫秒
-	withCredentials: true, // 异步请求携带cookie
 	headers: {
 		'Content-Type': 'application/json',
 		'X-Requested-With': 'XMLHttpRequest',
@@ -19,9 +35,14 @@ const instance: AxiosInstance = axios.create({
 // 添加请求拦截器
 instance.interceptors.request.use(
 	(config) => {
-		if (hasToken() && config.headers) {
-			config.headers[getTokenKey()] = getToken()
+		clearTimeout(loadingTimer)
+		loadingOpenedCount++
+		if (hasGuestToken()) {
+			config.headers.Authorization = getGuestToken()
+		} else if (hasToken() && config.headers) {
+			config.headers.Authorization = getToken()
 		}
+		ElLoading.service(loadingOptions)
 		return config
 	},
 	(error) => {
@@ -32,6 +53,28 @@ instance.interceptors.request.use(
 // 添加响应拦截器
 instance.interceptors.response.use(
 	(response) => {
+		loadingOpenedCount--
+		if (loadingOpenedCount <= 0) {
+			loadingTimer = setTimeout(() => {
+				ElLoading.service(loadingOptions).close()
+			}, 100)
+		}
+		return response.data
+	},
+	(error) => {
+		loadingOpenedCount--
+		if (loadingOpenedCount <= 0) {
+			loadingTimer = setTimeout(() => {
+				ElLoading.service(loadingOptions).close()
+			}, 100)
+		}
+		let { response } = error
+		if (!response) {
+			response = {
+				status: 504,
+				data: {},
+			}
+		}
 		let message = 'Server busy, please try again later'
 		const { status } = response
 		switch (status) {
@@ -42,7 +85,10 @@ instance.interceptors.response.use(
 						type: 'warning',
 						message,
 					})
-					location.href = '/sign-in'
+					removeToken()
+					router.replace({
+						name: 'sign-in',
+					})
 				}
 				tokenIsInvalid = true
 				break
@@ -74,11 +120,7 @@ instance.interceptors.response.use(
 				message,
 			})
 		}
-
-		return response
-	},
-	(error) => {
-		return Promise.reject(error)
+		return error
 	}
 )
 

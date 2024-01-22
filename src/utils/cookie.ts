@@ -1,9 +1,11 @@
 import Cookies from 'js-cookie'
+import { Base64 } from 'js-base64'
 
 const MAX_AGE = parseInt(import.meta.env.VITE_APP_REMEMBER_ME_MAX_AGE)
 const AUTH_TOKEN_KEY = import.meta.env.VITE_APP_AUTH_TOKEN_KEY
 const AUTH_TOKEN_VALUE = import.meta.env.VITE_APP_AUTH_TOKEN_VALUE
-const USER_INFO_KEY = import.meta.env.VITE_APP_USER_INFO_KEY
+const USER_INFO = import.meta.env.VITE_APP_USER_INFO
+const GUEST_TOKEN_VALUE = import.meta.env.VITE_APP_GUEST_TOKEN_VALUE
 
 export const isEmpty = (val: any) => {
 	return typeof val === 'undefined' || val === null || val === ''
@@ -23,7 +25,7 @@ export const setToken = ({ key, token, expires }: { [key: string]: any }) => {
 }
 
 export const getToken = () => {
-	return Cookies.set(AUTH_TOKEN_VALUE) || localStorage.getItem(AUTH_TOKEN_VALUE)
+	return Cookies.get(AUTH_TOKEN_VALUE) || localStorage.getItem(AUTH_TOKEN_VALUE)
 }
 
 export const removeToken = () => {
@@ -61,9 +63,7 @@ export const hasToken = () => {
 export const getUserInfo = () => {
 	try {
 		return (
-			JSON.parse((localStorage as any).getItem(USER_INFO_KEY)) ||
-			parseToken(getToken() as string) ||
-			{}
+			JSON.parse((localStorage as any).getItem(USER_INFO)) || parseToken(getToken() as string) || {}
 		)
 	} catch (e) {
 		//
@@ -75,5 +75,23 @@ export const getUserInfo = () => {
  * @param userInfo {userId:'',userName:''} TODO 暂时 any 还不清楚API到底返回什么值
  */
 export const setUserInfo = (userInfo: any) => {
-	localStorage.setItem(USER_INFO_KEY, JSON.stringify(userInfo))
+	localStorage.setItem(USER_INFO, JSON.stringify(userInfo))
+}
+
+export const hasGuestToken = () => {
+	return Cookies.get(GUEST_TOKEN_VALUE)
+}
+
+export const getGuestToken = () => {
+	return Cookies.get(GUEST_TOKEN_VALUE)
+}
+
+export const setGuestToken = (value: string) => {
+	const attributes: { expires?: Date } = {}
+	attributes.expires = new Date(Date.now() + 30 * 60 * 1000)
+	Cookies.set(GUEST_TOKEN_VALUE, value, attributes)
+}
+
+export const removeGuestToken = () => {
+	Cookies.remove(GUEST_TOKEN_VALUE)
 }

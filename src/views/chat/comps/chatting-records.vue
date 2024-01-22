@@ -35,8 +35,8 @@
 			</div>
 			<div class="form-wrap">
 				<el-form :model="form" inline>
-					<el-form-item prop="suggestion">
-						<el-input v-model="form.suggestion" placeholder="Type a message">
+					<el-form-item prop="reqTxt">
+						<el-input v-model="form.reqTxt" placeholder="Type a message">
 							<template #suffix>
 								<el-dropdown
 									:popper-class="[
@@ -60,7 +60,7 @@
 						</el-input>
 					</el-form-item>
 					<el-form-item>
-						<el-button type="primary">
+						<el-button type="primary" @click="sendMessage">
 							<img src="@/assets/image/send.png" />
 						</el-button>
 					</el-form-item>
@@ -70,11 +70,23 @@
 	</div>
 </template>
 <script setup lang="ts">
-import { reactive } from 'vue'
+import { reactive, withDefaults, defineProps } from 'vue'
 import { ArrowDown } from '@element-plus/icons-vue'
-import { ChatMessage } from '@/interface/interface'
+import { ChatMessage, ModelItem } from '@/interface'
+
+withDefaults(
+	defineProps<{
+		model: ModelItem
+		sessionId: string
+	}>(),
+	{
+		model: undefined,
+		sessionId: '',
+	}
+)
+
 const form = reactive({
-	suggestion: '',
+	reqTxt: '',
 })
 const messageList = reactive<ChatMessage[]>([
 	{
@@ -100,4 +112,10 @@ const messageList = reactive<ChatMessage[]>([
 		picture: '',
 	},
 ])
+
+const sendMessage = async () => {
+  if (form.reqTxt) {
+    
+  }
+}
 </script>

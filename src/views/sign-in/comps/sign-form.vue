@@ -44,20 +44,22 @@
 	</div>
 </template>
 <script setup lang="ts">
-import { reactive, ref, computed } from 'vue'
-import { useRouter } from 'vue-router'
+import { reactive, ref, computed, onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import type { FormInstance, FormRules } from 'element-plus'
-import { SignInParams } from '@/interface/interface'
+import { SignInParams } from '@/interface'
 import AgeVerification from '@/components/age-verification/age-verification.vue'
-import { signInApi, signUpApi } from '@/apis'
-import { setToken } from '@/utils/cookie'
+import { signInApi, signUpApi, userInfoApi, emailAuthApi } from '@/apis'
+import { setToken, removeGuestToken, setUserInfo } from '@/utils/cookie'
 import { ElMessage } from 'element-plus'
+import { isEmpty } from 'lodash'
 
 const ageVisible = ref(false)
 const ruleFormRef = ref<FormInstance>()
 const form = reactive<SignInParams>({
 	username: '',
 	password: '',
+	passport: '',
 })
 const rules = reactive<FormRules<SignInParams>>({
 	username: [{ required: true, message: 'Please enter the login username', trigger: 'blur' }],
@@ -67,6 +69,68 @@ const router = useRouter()
 const isSignIn = computed(() => {
 	return router.currentRoute.value.name === 'sign-in'
 })
+
+const route = useRoute()
+onMounted(async () => {
+	const query = route.query
+	if (!isEmpty(query)) {
+		const { code, msg } = await emailAuthApi({
+			accountId: query.u as string,
+			code: query.cf as string,
+		})
+
+		if (code === 1000) {
+			login()
+		} else {
+			ElMessage({
+				type: 'error',
+				message: msg,
+			})
+		}
+	}
+})
+
+const login = async () => {
+	const { data, code, msg } = await signInApi({
+		...form,
+		passport: 'FRONT',
+	})
+	if (code === 1000) {
+		setToken({
+			key: 'token',
+			token: `Friend ${data.token}`,
+		})
+		const userInfo = await userInfoApi()
+		setUserInfo(userInfo)
+		removeGuestToken()
+		router.push({ name: 'explore' })
+	} else {
+		ElMessage({
+			type: 'error',
+			message: msg,
+		})
+	}
+}
+
+const register = async () => {
+	const { code, data, msg } = await signUpApi({
+		account: form.username,
+		password: form.password,
+	})
+
+	if (code === 1000) {
+		setToken({
+			key: 'token',
+			token: `Friend ${data.token}`,
+		})
+		setUserInfo(data)
+	} else {
+		ElMessage({
+			type: 'error',
+			message: msg,
+		})
+	}
+}
 
 const submitForm = async (formEl: FormInstance | undefined) => {
 	if (!formEl) {
@@ -78,40 +142,9 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 		}
 
 		if (isSignIn.value) {
-			const { data, code, msg } = await signInApi({
-				...form,
-				passport: 'FRONT',
-			})
-			if (code === 1000) {
-				setToken({
-					key: 'user_token',
-					token: `Bearer ${data.token}`,
-				})
-				router.push({ name: 'explore' })
-			} else {
-				ElMessage({
-					type: 'error',
-					message: msg,
-				})
-			}
+			login()
 		} else {
-			const { data, code, msg } = await signUpApi({
-				account: form.username,
-				password: form.password,
-			})
-
-			if (code === 1000) {
-				setToken({
-					key: 'user_token',
-					token: data.token,
-				})
-				localStorage.setItem('user_role', data.REGISTERED_PENDING)
-			} else {
-				ElMessage({
-					type: 'error',
-					message: msg,
-				})
-			}
+			register()
 		}
 	})
 }

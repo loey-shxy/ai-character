@@ -2,23 +2,21 @@
 	<div class="model-info">
 		<div class="model-info__photo-list">
 			<el-carousel :autoplay="false" arrow="always">
-				<el-carousel-item v-for="img in images" :key="img">
+				<el-carousel-item v-for="img in model?.imgs" :key="img">
 					<el-image :src="img" fit="cover" />
 				</el-carousel-item>
 			</el-carousel>
 		</div>
 		<div class="model-info__detail">
 			<div class="model-info__detail-instruc">
-				<div class="model-info__detail-name">{{ chatModelList[selectedModel].name }}</div>
+				<div class="model-info__detail-name">{{ model?.name }}</div>
 				<div
 					:class="[
 						'model-info__detail-instruction text-line-clamp',
 						isLogin ? 'text-line-clamp__3' : 'text-line-clamp__6',
 					]"
 				>
-					Digital muse and trendsetter, known as the perfect girl next door, finds herself in a cozy
-					local coffee shop she muse and trendsetter, known as the perfect girl next door, finds
-					herself in a cozy local coffee shop she...
+					{{ model?.desc }}
 				</div>
 			</div>
 			<div v-if="isLogin" class="model-personal-attribute">
@@ -30,7 +28,7 @@
 						</div>
 						<div class="attribute-item__value">
 							<div class="label">{{ item.label }}</div>
-							<div class="value">{{ item.value }}</div>
+							<div class="value">{{ model?.[item.key] }}</div>
 						</div>
 					</div>
 				</div>
@@ -39,44 +37,42 @@
 	</div>
 </template>
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
-import { ModelInfo } from '@/interface/interface'
+import { reactive, computed } from 'vue'
+import { ModelItem } from '@/interface'
+import { hasToken } from '@/utils/cookie'
 
-interface Props {
-	selectedModel: number
-	chatModelList: ModelInfo[]
-}
-const props = withDefaults(defineProps<Props>(), {
-	selectedModel: 0,
-	chatModelList: () => [],
+withDefaults(
+	defineProps<{
+		model: ModelItem
+	}>(),
+	{
+		model: undefined,
+	}
+)
+
+const isLogin = computed(() => {
+	return hasToken()
 })
 
-const isLogin = ref(true)
-const images = reactive([
-	new URL('@/assets/image/model1.png', import.meta.url).href,
-	new URL('@/assets/image/model2.png', import.meta.url).href,
-	new URL('@/assets/image/model1.png', import.meta.url).href,
-	new URL('@/assets/image/model2.png', import.meta.url).href,
-])
 const personalAttributes = reactive([
 	{
 		label: 'PERSONALITY',
-		value: 'Funny, relaxed',
+		key: 'personality',
 		icon: new URL('@/assets/image/personality.png', import.meta.url).href,
 	},
 	{
 		label: 'OCCUPATION',
-		value: 'Waitress',
+		key: 'occupation',
 		icon: new URL('@/assets/image/occupation.png', import.meta.url).href,
 	},
 	{
 		label: 'HOBBIES',
-		value: 'Gaming, manga',
+		key: 'hobbies',
 		icon: new URL('@/assets/image/hobbies.png', import.meta.url).href,
 	},
 	{
 		label: 'RELATIONSHIP',
-		value: 'N/A',
+		key: 'relationship',
 		icon: new URL('@/assets/image/relationship.png', import.meta.url).href,
 	},
 ])

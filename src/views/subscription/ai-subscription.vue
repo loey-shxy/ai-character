@@ -7,34 +7,39 @@
 			<h3>100% anonymous. You can cancel anytime.</h3>
 		</div>
 		<div class="subscription__plan-list">
-			<div v-for="item in planList" :key="item.type" class="plan-item">
+			<div
+				v-for="item in subscriptionList"
+				:key="item.id"
+				:class="['plan-item', item.unKey === selectedType && 'is-active']"
+				@click="selectSubType(item.unKey)"
+			>
 				<div class="plan-item__border">&nbsp;</div>
 				<div class="plan-item__content">
-					<div class="plan-item__title">{{ item.type }} Package</div>
+					<div class="plan-item__title">{{ subscriptionType.func(item.type) }} Package</div>
 					<div class="plan-item__price">
-						<span class="price">{{ item.unit }}{{ item.price }}</span>
-						<span class="original-price">{{ item.unit }}{{ item.originalPrice }}</span>
-						<span class="unit">/ month</span>
+						<span class="price">$ {{ item.prices }}</span>
+						<!-- <span class="original-price">{{ item.unit }}{{ item.originalPrice }}</span> -->
+						<span class="unit">/ {{ subscriptionType.func(item.type) }}</span>
 					</div>
-					<div class="plan-item__points">with a recharge of {{ item.points }} points</div>
+					<div class="plan-item__points">with a recharge of {{ item.point }} points</div>
 					<div class="plan-item__benefits">
 						<div class="benefits-title">Premium Benefits</div>
 						<div class="benefits-list">
 							<div class="benefits-list__item">
 								<img src="@/assets/image/enable.png" alt="" />
-								<span>One voice: 10 o'clock;</span>
+								<span>One voice: {{ item.voiceSize }} o'clock;</span>
 							</div>
 							<div class="benefits-list__item">
 								<img src="@/assets/image/enable.png" alt="" />
-								<span>A picture: 50 points;</span>
+								<span>A picture: {{ item.imageSize }} points;</span>
 							</div>
-							<div v-if="item.type === 'basic'" class="benefits-list__item">
+							<div v-if="!item.videoSize" class="benefits-list__item">
 								<img src="@/assets/image/unable.png" alt="" />
 								<span>Unable to watch videos;</span>
 							</div>
 							<div v-else class="benefits-list__item">
 								<img src="@/assets/image/enable.png" alt="" />
-								<span>One video: 200 points;</span>
+								<span>One video: {{ item.videoSize }} points;</span>
 							</div>
 						</div>
 					</div>
@@ -42,28 +47,35 @@
 			</div>
 		</div>
 		<div class="subscription__btn-wrap">
-			<el-button type="primary">Pay</el-button>
+			<el-button type="primary" @click="createSubOrder">Pay</el-button>
 		</div>
 	</div>
 </template>
 <script setup lang="ts">
-import { reactive } from 'vue'
+import { onMounted, ref } from 'vue'
+import { SubscriptionPackage, SubscriptionOrder } from '@/interface'
+import { getSubscriptionPackageApi, createSubscribeOrderApi } from '@/apis'
+import { subscriptionType } from '@/common/dict'
 
-const planList = reactive([
-	{
-		type: 'basic',
-		price: 9.9,
-		originalPrice: 19.9,
-		unit: '$',
-		points: 1000,
-	},
-	{
-		type: 'fan',
-		price: 29.9,
-		originalPrice: 49.9,
-		unit: '$',
-		points: 3500,
-	},
-])
+onMounted(() => {
+	getSubscriptionList()
+})
+// 订阅列表
+const subscriptionList = ref<Array<SubscriptionPackage>>([])
+const getSubscriptionList = async () => {
+	subscriptionList.value = await getSubscriptionPackageApi()
+}
+
+// 选择订阅类型
+const selectedType = ref('')
+const selectSubType = (unKey: string) => {
+	selectedType.value = unKey
+}
+
+const subOrder = ref<SubscriptionOrder>()
+// 订阅
+const createSubOrder = async () => {
+	subOrder.value = await createSubscribeOrderApi(selectedType.value)
+}
 </script>
 <style lang="scss"></style>
