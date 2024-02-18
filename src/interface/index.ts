@@ -1,7 +1,7 @@
 // 分页参数
 export interface PagingQuery {
-	page?: number
-	limit?: number
+	page: number
+	limit: number
 	[propName: string]: any
 }
 

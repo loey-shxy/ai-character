@@ -74,21 +74,25 @@ const route = useRoute()
 onMounted(async () => {
 	const query = route.query
 	if (!isEmpty(query)) {
-		const { code, msg } = await emailAuthApi({
-			accountId: query.u as string,
-			code: query.cf as string,
-		})
-
-		if (code === 1000) {
-			login()
-		} else {
-			ElMessage({
-				type: 'error',
-				message: msg,
-			})
-		}
+		emailAuth(query.u as string, query.cf as string)
 	}
 })
+
+const emailAuth = async (accountId: string, authCode: string) => {
+	const { code, msg } = await emailAuthApi({
+		accountId,
+		code: authCode,
+	})
+
+	if (code === 1000) {
+		login()
+	} else {
+		ElMessage({
+			type: 'error',
+			message: msg,
+		})
+	}
+}
 
 const login = async () => {
 	const { data, code, msg } = await signInApi({
@@ -123,6 +127,7 @@ const register = async () => {
 			key: 'token',
 			token: `Friend ${data.token}`,
 		})
+		emailAuth(data.userId, 'adcd')
 		setUserInfo(data)
 	} else {
 		ElMessage({

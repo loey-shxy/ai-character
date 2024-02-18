@@ -34,7 +34,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="explore__model-wrap scroll-bar">
+		<div class="explore__model-wrap scroll-bar" @scroll="handleScroll($event)">
 			<div class="explore__model-list">
 				<div v-for="item in modelList" :key="item.id" class="explore__model-list_item">
 					<div class="model-photo-box">
@@ -56,11 +56,12 @@
 	</div>
 </template>
 <script setup lang="ts">
-import { ref, reactive, watch } from 'vue'
-import { getModelListApi } from '@/apis'
+import { ref, reactive, watch, onMounted } from 'vue'
+import { getModelListApi, emailAuthApi } from '@/apis'
 import { ModelItem, ModelListQuery, ModelType } from '@/interface'
 
 // ai characters query
+const total = ref(0)
 const params = reactive<ModelListQuery>({
 	type: 1,
 	page: 1,
@@ -71,6 +72,7 @@ const params = reactive<ModelListQuery>({
 const modelList = ref<ModelItem[]>([])
 const getModelList = async () => {
 	const data = await getModelListApi(params)
+	total.value = data.total
 	modelList.value = [...modelList.value, ...data.records]
 }
 watch(
@@ -96,5 +98,28 @@ const selectSex = ref('female')
 const changeSex = (sex: string) => {
 	selectSex.value = sex
 }
+
+const handleScroll = (event: any) => {
+	const scrollBottom =
+		event.target?.scrollHeight - event.target?.scrollTop - event.target?.clientHeight
+
+	if (scrollBottom <= 0 && params.page * params.limit < total.value) {
+		params.page++
+	}
+}
+
+onMounted(async () => {
+	window.addEventListener('scroll', () => {
+		const scrollTop = document.documentElement.scrollTop
+		const scrollHeight = document.documentElement.scrollHeight
+		const clientHeight = document.documentElement.clientHeight
+
+		const scrollBottom = scrollHeight - scrollTop - clientHeight
+
+		if (scrollBottom <= 100 && params.page * params.limit < total.value) {
+			params.page++
+		}
+	})
+})
 </script>
 <style lang="scss"></style>

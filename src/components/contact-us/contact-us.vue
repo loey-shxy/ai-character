@@ -22,7 +22,7 @@
 			<span class="dialog-footer">
 				<el-button type="primary" @click="send(ruleFormRef)">Send</el-button>
 			</span>
-		</template>msg
+		</template>
 	</el-dialog>
 </template>
 <script setup lang="ts">

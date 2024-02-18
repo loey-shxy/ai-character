@@ -318,9 +318,15 @@
   }
   // explore
   .explore {
+    // position: relative;
+    // height: 100%;
     &__model-type {
       height: 388px;
       padding: 111px 0 107px 0;
+      // position: absolute;
+      // top: 0;
+      // left: 0;
+      // right: 0;
       &::after,
       &::before {
         width: 507px;
@@ -344,6 +350,14 @@
           }
         }
       }
+    }
+    &__model-wrap {
+      // position: absolute;
+      // top: 388px;
+      // left: 0;
+      // right: 0;
+      // height: calc(100% - 388px);
+      // overflow-y: auto;
     }
     &__model-list {
       &_item {
