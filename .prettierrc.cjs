@@ -4,7 +4,7 @@ module.exports = {
   // 每个缩进空格数
   tabWidth: 2,
   // 使用制表符
-  useTabs: true,
+  useTabs: false,
   // 语句末尾是否需要分号
   semi: false,
   // 是否使用单引号

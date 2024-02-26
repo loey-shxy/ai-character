@@ -45,6 +45,7 @@ module.exports = {
         semi: false,
         endOfLine: 'auto',
         printWidth: 100,
+        useTabs: false,
       },
     ],
     // 禁止出现 console
@@ -156,7 +157,7 @@ module.exports = {
     'no-case-declarations': 'warn',
     'no-async-promise-executor': 'off',
     'vue/script-setup-uses-vars': 'off',
-    'vue/valid-attribute-name': 'off',
+    'vue/valid-attribute-name': 'off'
   },
   globals: {
     defineProps: 'readonly',

@@ -8,7 +8,8 @@
     "dev:test": "vite --mode test",
     "build": "vue-tsc && vite build",
     "preview": "vite preview",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "lint:fix": "eslint --fix --ext .js,.jsx,.vue ."
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.1",

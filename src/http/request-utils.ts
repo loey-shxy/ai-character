@@ -8,10 +8,10 @@ import { Response } from '../http/request'
  * @returns {{total: number, records: Array}}
  */
 const handlerTableData = function (
-	{ error, code, data }: Response,
-	preset = { total: 0, records: [] }
+  { error, code, data }: Response,
+  preset = { total: 0, records: [] }
 ) {
-	return !error && (code === 1000 || code === 0) && isObject(data) ? data : preset
+  return !error && (code === 1000 || code === 0) && isObject(data) ? data : preset
 }
 /**
  * 处理返回数组的数据
@@ -22,7 +22,7 @@ const handlerTableData = function (
  * @returns {Array}
  */
 const handlerArrayData = function ({ error, code, data }: Response, preset = []) {
-	return !error && (code === 1000 || code === 0) && isArray(data) ? data : preset
+  return !error && (code === 1000 || code === 0) && isArray(data) ? data : preset
 }
 
 /**
@@ -34,7 +34,7 @@ const handlerArrayData = function ({ error, code, data }: Response, preset = [])
  * @returns {*}
  */
 const handlerObjectData = function ({ error, code, data }: Response, preset = {}) {
-	return !error && (code === 1000 || code === 0) && isObject(data) ? data : preset
+  return !error && (code === 1000 || code === 0) && isObject(data) ? data : preset
 }
 
 /**
@@ -46,7 +46,7 @@ const handlerObjectData = function ({ error, code, data }: Response, preset = {}
  * @returns {*}
  */
 const handlerData = function ({ error, code, data }: Response, preset: any = '') {
-	return !error && (code === 1000 || code === 0) ? data : preset
+  return !error && (code === 1000 || code === 0) ? data : preset
 }
 
 export { handlerTableData, handlerArrayData, handlerObjectData, handlerData }

@@ -12,19 +12,19 @@ const pinia = createPinia()
 
 const clientWidth = document.body.clientWidth
 const isMobile =
-	/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
-	clientWidth <= 1000
+  /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+  clientWidth <= 1000
 app.config.globalProperties.$isMobile = isMobile
 if (isMobile) {
-	import('@/assets/scss/mobile-style.scss')
+  import('@/assets/scss/mobile-style.scss')
 } else {
-	import('@/assets/scss/pc-style.scss')
+  import('@/assets/scss/pc-style.scss')
 }
 
 app
-	.use(router)
-	.use(pinia)
-	.use(ElementPlus, {
-		locale: en,
-	})
-	.mount('#app')
+  .use(router)
+  .use(pinia)
+  .use(ElementPlus, {
+    locale: en,
+  })
+  .mount('#app')
