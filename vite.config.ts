@@ -17,12 +17,12 @@ export default defineConfig(() => {
       host: '0.0.0.0',
       proxy: {
         '/auth': {
-          target: 'http://onlyfriend.vanas.cloud',
+          target: 'http://service.api.fanschat.co',
           changeOrigin: true,
           rewrite: (path) => path.replace(/\/auth/, ""),
         },
         '/api': {
-          target: 'http://onlyfriend.vanas.cloud',
+          target: 'http://service.api.fanschat.co',
           changeOrigin: true,
           rewrite: (path) => path.replace(/\/api/, ""),
         }

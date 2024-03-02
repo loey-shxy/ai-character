@@ -75,6 +75,12 @@ const routes: RouteRecordRaw[] = [
     component: async () => await import('@/views/reset-password/reset-password.vue'),
     meta: { title: 'Reset Password' },
   },
+  {
+    path: '/email-auth',
+    name: 'email-auth',
+    component: async () => await import('@/views/email-auth/email-auth.vue'),
+    meta: { title: 'Email Auth' },
+  },
 ]
 
 const router = createRouter({

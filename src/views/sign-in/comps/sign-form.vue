@@ -44,15 +44,14 @@
   </div>
 </template>
 <script setup lang="ts">
-import { reactive, ref, computed, onMounted } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { reactive, ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
 import type { FormInstance, FormRules } from 'element-plus'
 import { SignInParams } from '@/interface'
 import AgeVerification from '@/components/age-verification/age-verification.vue'
-import { signInApi, signUpApi, userInfoApi, emailAuthApi } from '@/apis'
+import { signInApi, signUpApi, userInfoApi } from '@/apis'
 import { setToken, removeGuestToken, setUserInfo } from '@/utils/cookie'
 import { ElMessage } from 'element-plus'
-import { isEmpty } from 'lodash'
 
 const ageVisible = ref(false)
 const ruleFormRef = ref<FormInstance>()
@@ -69,30 +68,6 @@ const router = useRouter()
 const isSignIn = computed(() => {
   return router.currentRoute.value.name === 'sign-in'
 })
-
-const route = useRoute()
-onMounted(async () => {
-  const query = route.query
-  if (!isEmpty(query)) {
-    emailAuth(query.u as string, query.cf as string)
-  }
-})
-
-const emailAuth = async (accountId: string, authCode: string) => {
-  const { code, msg } = await emailAuthApi({
-    accountId,
-    code: authCode,
-  })
-
-  if (code === 1000) {
-    login()
-  } else {
-    ElMessage({
-      type: 'error',
-      message: msg,
-    })
-  }
-}
 
 const login = async () => {
   const { data, code, msg } = await signInApi({
@@ -117,24 +92,11 @@ const login = async () => {
 }
 
 const register = async () => {
-  const { code, data, msg } = await signUpApi({
+  await signUpApi({
     account: form.username,
     password: form.password,
   })
-
-  if (code === 1000) {
-    setToken({
-      key: 'token',
-      token: `Friend ${data.token}`,
-    })
-    emailAuth(data.userId, 'adcd')
-    setUserInfo(data)
-  } else {
-    ElMessage({
-      type: 'error',
-      message: msg,
-    })
-  }
+  router.push({ name: 'email-auth' })
 }
 
 const submitForm = async (formEl: FormInstance | undefined) => {

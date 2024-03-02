@@ -265,6 +265,21 @@
       }
     }
   }
+  .email-auth {
+    flex-direction: column;
+    .title {
+      font-size: 40px;
+      line-height: 46px;
+    }
+    .el-button {
+      margin-top: 50px;
+      height: 51px;
+      border-radius: 10px;
+      font-size: 18px;
+      font-weight: 500;
+      width: 160px;
+    }
+  }
   // 登录/注册表单
   .sign-form {
     width: 440px;
