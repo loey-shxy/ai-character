@@ -36,7 +36,12 @@
     </div>
     <div class="explore__model-wrap scroll-bar" @scroll="handleScroll($event)">
       <div class="explore__model-list">
-        <div v-for="item in modelList" :key="item.id" class="explore__model-list_item">
+        <div
+          v-for="item in modelList"
+          :key="item.id"
+          class="explore__model-list_item"
+          @click="createSession(item)"
+        >
           <div class="model-photo-box">
             <el-image :src="item.headUrl" fit="cover"></el-image>
           </div>
@@ -57,8 +62,9 @@
 </template>
 <script setup lang="ts">
 import { ref, reactive, watch, onMounted } from 'vue'
-import { getModelListApi, emailAuthApi } from '@/apis'
+import { getModelListApi } from '@/apis'
 import { ModelItem, ModelListQuery, ModelType } from '@/interface'
+import { useRouter } from 'vue-router'
 
 // ai characters query
 const total = ref(0)
@@ -121,5 +127,15 @@ onMounted(async () => {
     }
   })
 })
+
+const router = useRouter()
+const createSession = (model: ModelItem) => {
+  router.push({
+    name: 'chat',
+    query: {
+      id: model.id,
+    },
+  })
+}
 </script>
 <style lang="scss"></style>

@@ -30,20 +30,35 @@
         <el-image :src="selectedModel?.headUrl" fit="cover" @click="toDetail" />
         <span @click="toDetail">{{ selectedModel?.name }}</span>
       </div>
-      <ChattingRecords :model="selectedModel" :session-id="sessionId" />
+      <ChattingRecords :model="selectedModel" :session-id="messageQuery.sessionId" />
     </div>
     <ChatModelInfo v-if="!$isMobile" :model="selectedModel" />
   </div>
 </template>
 <script setup lang="ts">
-import { ref, getCurrentInstance, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, getCurrentInstance, onMounted, watch } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import { Search } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import ChattingRecords from './comps/chatting-records.vue'
 import ChatModelInfo from './comps/chat-model-info.vue'
-import { SessionItem, ModelItem } from '@/interface/index'
-import { userSessionListApi, createSessionApi, deleteSessionApi, refreshSessionApi } from '@/apis'
+import {
+  SessionItem,
+  ModelItem,
+  SessionChatMessage,
+  SessionChatMessageQuery,
+} from '@/interface/index'
+import {
+  userSessionListApi,
+  createSessionApi,
+  deleteSessionApi,
+  refreshSessionApi,
+  sessionChatListApi,
+} from '@/apis'
+import { isEmpty } from 'lodash'
+
+const selectedModel = ref<ModelItem>()
+
 const keyword = ref('')
 const {
   appContext: {
@@ -55,17 +70,47 @@ const sessionList = ref<SessionItem[]>([])
 const getSessionList = async () => {
   sessionList.value = await userSessionListApi()
 }
-onMounted(() => {
+
+const route = useRoute()
+onMounted(async () => {
   getSessionList()
+  const query = route.query
+  if (!isEmpty(query)) {
+    await createSessionApi(query.id as string)
+  }
 })
 
-// 开启会话
-const sessionId = ref('')
-const selectedModel = ref<ModelItem>()
+// 获取会话历史信息
 const changeModel = async (session: SessionItem) => {
   selectedModel.value = session.model
-  sessionId.value = session.id
-  await createSessionApi(session.id)
+  messageQuery.sessionId = session.id
+}
+
+const total = ref(0)
+const sessionChatList = ref<SessionChatMessage[]>([])
+const messageQuery = reactive<SessionChatMessageQuery>({
+  page: 1,
+  sessionId: '',
+  limit: 5,
+  sort: 'desc',
+})
+
+watch(
+  () => messageQuery,
+  () => {
+    if (messageQuery.sessionId) {
+      getSessionChatMessage()
+    }
+  },
+  {
+    immediate: true,
+    deep: true,
+  }
+)
+const getSessionChatMessage = async () => {
+  const data = await sessionChatListApi(messageQuery)
+  sessionChatList.value = data.records
+  total.value = data.total
 }
 
 // 刷新会话

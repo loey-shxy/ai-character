@@ -17,27 +17,27 @@
 <script setup lang="ts">
 import { reactive } from 'vue'
 const galleryList = reactive([
-  {
-    id: 1,
-    typeName: 'Alexis Mary',
-    photos: [
-      new URL('@/assets/image/model1.png', import.meta.url).href,
-      new URL('@/assets/image/model2.png', import.meta.url).href,
-      new URL('@/assets/image/model1.png', import.meta.url).href,
-      new URL('@/assets/image/model2.png', import.meta.url).href,
-      new URL('@/assets/image/model1.png', import.meta.url).href,
-      new URL('@/assets/image/model2.png', import.meta.url).href,
-    ],
-  },
-  {
-    id: 2,
-    typeName: 'Hepburn',
-    photos: [
-      new URL('@/assets/image/model1.png', import.meta.url).href,
-      new URL('@/assets/image/model2.png', import.meta.url).href,
-      new URL('@/assets/image/model2.png', import.meta.url).href,
-    ],
-  },
+  // {
+  //   id: 1,
+  //   typeName: 'Alexis Mary',
+  //   photos: [
+  //     new URL('@/assets/image/model1.png', import.meta.url).href,
+  //     new URL('@/assets/image/model2.png', import.meta.url).href,
+  //     new URL('@/assets/image/model1.png', import.meta.url).href,
+  //     new URL('@/assets/image/model2.png', import.meta.url).href,
+  //     new URL('@/assets/image/model1.png', import.meta.url).href,
+  //     new URL('@/assets/image/model2.png', import.meta.url).href,
+  //   ],
+  // },
+  // {
+  //   id: 2,
+  //   typeName: 'Hepburn',
+  //   photos: [
+  //     new URL('@/assets/image/model1.png', import.meta.url).href,
+  //     new URL('@/assets/image/model2.png', import.meta.url).href,
+  //     new URL('@/assets/image/model2.png', import.meta.url).href,
+  //   ],
+  // },
 ])
 </script>
 <style lang="scss"></style>

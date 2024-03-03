@@ -176,3 +176,20 @@ export interface PaymentResponse {
   roles: string[]
   token: Token
 }
+
+export interface SessionChatMessage {
+  type: number // 文件类型
+  from: number // 1 模特 2 用户
+  txt?: string // 文本信息
+  txtVoice?: string // 文本消息对应的语音地址
+  respTxt?: string // 返回的文本信息
+  respTxtVoice?: string // 返回的文本消息的语音地址
+  previewPath?: string // 预览图片地址
+  sourcePath?: string // 原始图片地址
+}
+
+// 获取AI会话历史记录
+export interface SessionChatMessageQuery extends PagingQuery {
+  sessionId: string
+  sort: string
+}

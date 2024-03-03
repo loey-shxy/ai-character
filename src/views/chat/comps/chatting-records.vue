@@ -92,30 +92,30 @@ const form = reactive({
   reqTxt: '',
 })
 const messageList = reactive<Message[]>([
-  {
-    id: 1,
-    message: `Hey, gorgeous day, isn't it? I'm Alex, by the way. So, what's your name,sweety?`,
-    type: 'reply',
-    isPicture: false,
-    time: '11:30 PM',
-    picture: '',
-  },
-  {
-    id: 2,
-    message: `Could you please show me your photos`,
-    type: 'send',
-    isPicture: false,
-    time: '11:35 PM',
-    picture: '',
-  },
-  {
-    id: 3,
-    message: '',
-    type: 'reply',
-    isPicture: true,
-    time: '11:35 PM',
-    picture: '',
-  },
+  // {
+  //   id: 1,
+  //   message: `Hey, gorgeous day, isn't it? I'm Alex, by the way. So, what's your name,sweety?`,
+  //   type: 'reply',
+  //   isPicture: false,
+  //   time: '11:30 PM',
+  //   picture: '',
+  // },
+  // {
+  //   id: 2,
+  //   message: `Could you please show me your photos`,
+  //   type: 'send',
+  //   isPicture: false,
+  //   time: '11:35 PM',
+  //   picture: '',
+  // },
+  // {
+  //   id: 3,
+  //   message: '',
+  //   type: 'reply',
+  //   isPicture: true,
+  //   time: '11:35 PM',
+  //   picture: '',
+  // },
 ])
 
 const sendMessage = async () => {

@@ -17,6 +17,8 @@ import {
   SendMessageParams,
   SessionItem,
   PaymentResponse,
+  SessionChatMessage,
+  SessionChatMessageQuery,
 } from '@/interface'
 
 // login
@@ -163,9 +165,12 @@ export const userSessionListApi = async (): Promise<Array<SessionItem>> => {
 }
 
 // session chat list
-export const sessionChatListApi = async (): Promise<Response> => {
+export const sessionChatListApi = async (
+  params: SessionChatMessageQuery
+): Promise<Paging<SessionChatMessage>> => {
   return service({
     method: 'get',
+    data: params,
     url: '/api/front/session/chat-list',
   })
 }
