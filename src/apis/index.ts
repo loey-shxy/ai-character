@@ -19,6 +19,7 @@ import {
   PaymentResponse,
   SessionChatMessage,
   SessionChatMessageQuery,
+  SessionChatParams,
 } from '@/interface'
 
 // login
@@ -118,11 +119,12 @@ export const orderPaymentApi = async (orderId: string): Promise<PaymentResponse>
 }
 
 // create session
-export const createSessionApi = async (modelId: string): Promise<ChatMessage> => {
+export const createSessionApi = async (params: SessionChatParams): Promise<ChatMessage> => {
   return handlerObjectData(
     await service({
-      method: 'get',
-      url: `/api/front/session/create/${modelId}`,
+      method: 'post',
+      url: `/api/front/session/chat`,
+      data: params,
     })
   ) as ChatMessage
 }
@@ -168,9 +170,11 @@ export const userSessionListApi = async (): Promise<Array<SessionItem>> => {
 export const sessionChatListApi = async (
   params: SessionChatMessageQuery
 ): Promise<Paging<SessionChatMessage>> => {
-  return service({
-    method: 'get',
-    data: params,
-    url: '/api/front/session/chat-list',
-  })
+  return handlerTableData(
+    await service({
+      method: 'post',
+      data: params,
+      url: '/api/front/session/chat-list',
+    })
+  )
 }

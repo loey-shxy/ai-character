@@ -193,3 +193,9 @@ export interface SessionChatMessageQuery extends PagingQuery {
   sessionId: string
   sort: string
 }
+
+export interface SessionChatParams {
+  sessionId: string
+  modelId: string
+  newSession: number // 新会话 1 是 0 否
+}

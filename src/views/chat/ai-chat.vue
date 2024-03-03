@@ -15,7 +15,9 @@
             </div>
             <div class="model-name">
               <div class="model-name__name">{{ item.model.name }}</div>
-              <div class="model-name__message">{{ item.model.desc }}</div>
+              <div class="model-name__message text-line-clamp text-line-clamp__3">
+                {{ item.model.desc }}
+              </div>
             </div>
             <div class="model-list__operation">
               <div class="operation-icon refresh" @click="refreshSession(item)"></div>
@@ -30,7 +32,11 @@
         <el-image :src="selectedModel?.headUrl" fit="cover" @click="toDetail" />
         <span @click="toDetail">{{ selectedModel?.name }}</span>
       </div>
-      <ChattingRecords :model="selectedModel" :session-id="messageQuery.sessionId" />
+      <ChattingRecords
+        :model="selectedModel"
+        :session-id="messageQuery.sessionId"
+        :session-chat-list="sessionChatList"
+      />
     </div>
     <ChatModelInfo v-if="!$isMobile" :model="selectedModel" />
   </div>
@@ -73,10 +79,18 @@ const getSessionList = async () => {
 
 const route = useRoute()
 onMounted(async () => {
-  getSessionList()
+  await getSessionList()
   const query = route.query
   if (!isEmpty(query)) {
-    await createSessionApi(query.id as string)
+    const modelId = query.id as string
+    const session = sessionList.value?.find((item) => item.model.id === modelId) as SessionItem
+    changeModel(session)
+    await getSessionChatMessage()
+    await createSessionApi({
+      sessionId: session.id,
+      modelId,
+      newSession: total.value === 1 ? 1 : 0,
+    })
   }
 })
 
@@ -103,12 +117,13 @@ watch(
     }
   },
   {
-    immediate: true,
     deep: true,
   }
 )
 const getSessionChatMessage = async () => {
   const data = await sessionChatListApi(messageQuery)
+  console.log(data.records)
+  console.log(data.total)
   sessionChatList.value = data.records
   total.value = data.total
 }

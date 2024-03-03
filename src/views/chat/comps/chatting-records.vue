@@ -2,19 +2,22 @@
   <div class="chatting-records">
     <div class="chat-content scroll-bar">
       <div class="chat-content__list">
-        <template v-for="item in messageList">
+        <template v-for="(item, index) in sessionChatList">
           <div
-            v-if="!item.isPicture"
-            :key="item.id"
-            :class="['chat-content__list-message', item.type]"
+            v-if="item.type === RESP_MESSAGE_TYPE.VOICE.v"
+            :key="index"
+            :class="[
+              'chat-content__list-message',
+              item.from === RESP_FROM_TYPE.MODEL.v ? 'reply' : 'send',
+            ]"
           >
-            <div class="time">{{ item.time }}</div>
+            <!-- <div class="time">{{ item.time }}</div> -->
             <div class="message-popper">
-              <div class="message">{{ item.message }}</div>
-              <img v-if="item.type === 'reply'" src="@/assets/image/voice.png" />
+              <div class="message">{{ item.txt }}</div>
+              <img v-if="item.from === RESP_FROM_TYPE.MODEL.v" src="@/assets/image/voice.png" />
             </div>
           </div>
-          <div v-else :key="item.id + 'p'" class="chat-content__list-message picture">
+          <div v-else :key="index + 'p'" class="chat-content__list-message picture">
             <div class="download-process">
               <el-progress type="circle" :percentage="70" color="#E75175" status="exception">
                 <template #default="{ percentage }">
@@ -75,51 +78,34 @@
 <script setup lang="ts">
 import { reactive, withDefaults, defineProps } from 'vue'
 import { ArrowDown } from '@element-plus/icons-vue'
-import { Message, ModelItem } from '@/interface'
+import { ModelItem, SessionChatMessage } from '@/interface'
+import { RESP_MESSAGE_TYPE, RESP_FROM_TYPE } from '@/common/constant'
+import { sendMessageApi } from '@/apis'
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     model: ModelItem
     sessionId: string
+    sessionChatList: SessionChatMessage[]
   }>(),
   {
     model: undefined,
     sessionId: '',
+    sessionChatList: () => [],
   }
 )
 
 const form = reactive({
   reqTxt: '',
 })
-const messageList = reactive<Message[]>([
-  // {
-  //   id: 1,
-  //   message: `Hey, gorgeous day, isn't it? I'm Alex, by the way. So, what's your name,sweety?`,
-  //   type: 'reply',
-  //   isPicture: false,
-  //   time: '11:30 PM',
-  //   picture: '',
-  // },
-  // {
-  //   id: 2,
-  //   message: `Could you please show me your photos`,
-  //   type: 'send',
-  //   isPicture: false,
-  //   time: '11:35 PM',
-  //   picture: '',
-  // },
-  // {
-  //   id: 3,
-  //   message: '',
-  //   type: 'reply',
-  //   isPicture: true,
-  //   time: '11:35 PM',
-  //   picture: '',
-  // },
-])
 
 const sendMessage = async () => {
   if (form.reqTxt) {
+    await sendMessageApi({
+      sessionId: props.sessionId,
+      modelId: props.model.id,
+      reqTxt: form.reqTxt,
+    })
   }
 }
 </script>
