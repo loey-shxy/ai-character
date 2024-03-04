@@ -48,25 +48,14 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref, getCurrentInstance, onMounted, watch } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { getCurrentInstance, onMounted, ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { Search } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import ChattingRecords from './comps/chatting-records.vue'
 import ChatModelInfo from './comps/chat-model-info.vue'
-import {
-  SessionItem,
-  ModelItem,
-  SessionChatMessage,
-  SessionChatMessageQuery,
-} from '@/interface/index'
-import {
-  userSessionListApi,
-  createSessionApi,
-  deleteSessionApi,
-  refreshSessionApi,
-  sessionChatListApi,
-} from '@/apis'
+import { ModelItem, SessionChatMessage, SessionChatMessageQuery, SessionItem } from '@/interface'
+import { createSessionApi, deleteSessionApi, refreshSessionApi, sessionChatListApi, userSessionListApi } from '@/apis'
 import { isEmpty } from 'lodash'
 
 const selectedModel = ref<ModelItem>()
@@ -74,17 +63,41 @@ const selectedModel = ref<ModelItem>()
 const keyword = ref('')
 const {
   appContext: {
-    config: { globalProperties },
-  },
+    config: { globalProperties }
+  }
 } = getCurrentInstance()
 
 const sessionList = ref<SessionItem[]>([])
 const getSessionList = async () => {
   sessionList.value = await userSessionListApi()
+  selectedModel.value = ensureModelId()
+  scrollToBottom()
 }
+
+const ensureModelId = () => {
+  const id = route.query.id
+  if (!sessionList.value) {
+    return {} as ModelItem
+  }
+  const existsItem = sessionList.value?.find((item) => item.model.id === id) as SessionItem
+  if (existsItem && id === existsItem.model.id) {
+    return existsItem.model
+  }
+  const lastItem = sessionList.value[sessionList.value.length - 1] as SessionItem
+  return lastItem.model
+}
+
+const scrollToBottom = () => {}
 
 const route = useRoute()
 onMounted(async () => {
+  //todo 步骤
+  /**
+   * 1. 获取会话列表
+   * 2. 如果选中的模型存在，继续使用sessionid
+   * 3. 如果不存在，启用新的session
+   * 4. 重新获取会话列表
+   */
   await getSessionList()
   const query = route.query
   if (!isEmpty(query)) {
@@ -139,7 +152,7 @@ watch(
     }
   },
   {
-    deep: true,
+    deep: true
   }
 )
 const getSessionChatMessage = async () => {
@@ -156,7 +169,7 @@ const refreshSession = async (session: SessionItem) => {
   } else {
     ElMessage({
       type: 'error',
-      message: msg,
+      message: msg
     })
   }
 }
@@ -179,11 +192,26 @@ const deleteSession = (session: SessionItem) => {
       getSessionList()
     } else {
       ElMessage({
-        type: 'error',
+        type: 'warning',
         message: msg,
       })
     }
   })
+    .then(async () => {
+      const { code, msg } = await deleteSessionApi(session.id)
+      if (code === 1000) {
+        ElMessage({
+          type: 'success',
+          message: 'Delete success'
+        })
+        getSessionList()
+      } else {
+        ElMessage({
+          type: 'error',
+          message: msg
+        })
+      }
+    })
 }
 
 const router = useRouter()
