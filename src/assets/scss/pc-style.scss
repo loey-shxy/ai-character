@@ -496,6 +496,10 @@
           padding: 20px 18px;
           align-items: center;
           cursor: pointer;
+          &.is-active {
+            background: #242323;
+            border-color: #747474;
+          }
           .model-photo {
             width: 57px;
             height: 57px;
@@ -598,9 +602,12 @@
               &__icon {
                 width: 30px;
                 height: 30px;
+                min-width: 30px;
+                min-height: 30px;
               }
               &__value {
                 margin-left: 9px;
+                padding-right: 8px;
                 .label {
                   font-size: 12px;
                   line-height: 14px;
@@ -645,6 +652,7 @@
                   width: 45px;
                   height: 45px;
                   cursor: pointer;
+                  margin-left: 10px;
                 }
                 .message {
                   line-height: 32px;
@@ -661,6 +669,11 @@
                 width: 320px;
                 height: 389px;
                 border-radius: 20px;
+                overflow: hidden;
+                .el-image {
+                  width: 100%;
+                  height: 100%;
+                }
                 .download-process {
                   width: 120px;
                   height: 120px;

@@ -2,8 +2,8 @@
   <div class="model-info">
     <div class="model-info__photo-list">
       <el-carousel :autoplay="false" arrow="always">
-        <el-carousel-item v-for="img in model?.imgs" :key="img">
-          <el-image :src="img" fit="cover" />
+        <el-carousel-item v-for="img in modelImgs" :key="img">
+          <el-image :src="img.preview" fit="cover" />
         </el-carousel-item>
       </el-carousel>
     </div>
@@ -41,17 +41,24 @@ import { reactive, computed } from 'vue'
 import { ModelItem } from '@/interface'
 import { hasToken } from '@/utils/cookie'
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     model: ModelItem
   }>(),
   {
-    model: undefined,
+    model: () => ({}) as ModelItem,
   }
 )
 
 const isLogin = computed(() => {
   return hasToken()
+})
+
+const modelImgs = computed(() => {
+  if (props.model?.imgs) {
+    return [props.model?.imgs.main]
+  }
+  return []
 })
 
 const personalAttributes = reactive([

@@ -7,7 +7,7 @@
           <div
             v-for="item in sessionList"
             :key="item.id"
-            class="model-list__item"
+            :class="['model-list__item', selectedModel?.id === item.model.id && 'is-active']"
             @click="changeModel(item)"
           >
             <div class="model-photo">
@@ -20,8 +20,8 @@
               </div>
             </div>
             <div class="model-list__operation">
-              <div class="operation-icon refresh" @click="refreshSession(item)"></div>
-              <div class="operation-icon delete" @click="deleteSession(item)"></div>
+              <div class="operation-icon refresh" @click.stop="refreshSession(item)"></div>
+              <div class="operation-icon delete" @click.stop="deleteSession(item)"></div>
             </div>
           </div>
         </div>
@@ -29,13 +29,19 @@
     </div>
     <div class="chat-content__wrap">
       <div class="content-header">
-        <el-image :src="selectedModel?.headUrl" fit="cover" @click="toDetail" />
+        <el-image
+          v-if="selectedModel?.headUrl"
+          :src="selectedModel?.headUrl"
+          fit="cover"
+          @click="toDetail"
+        />
         <span @click="toDetail">{{ selectedModel?.name }}</span>
       </div>
       <ChattingRecords
         :model="selectedModel"
         :session-id="messageQuery.sessionId"
         :session-chat-list="sessionChatList"
+        @refresh="getSessionChatMessage"
       />
     </div>
     <ChatModelInfo v-if="!$isMobile" :model="selectedModel" />
@@ -84,13 +90,29 @@ onMounted(async () => {
   if (!isEmpty(query)) {
     const modelId = query.id as string
     const session = sessionList.value?.find((item) => item.model.id === modelId) as SessionItem
-    changeModel(session)
-    await getSessionChatMessage()
-    await createSessionApi({
-      sessionId: session.id,
-      modelId,
-      newSession: total.value === 1 ? 1 : 0,
-    })
+    if (session) {
+      changeModel(session)
+      await getSessionChatMessage()
+      await createSessionApi({
+        sessionId: session.id,
+        modelId,
+        newSession: 0,
+      })
+    } else {
+      const data = await createSessionApi({
+        sessionId: '',
+        modelId,
+        newSession: 1,
+      })
+      const session = {
+        id: data.sessionId,
+        model: data.other,
+      }
+      sessionList.value.push(session as SessionItem)
+      selectedModel.value = data.other
+      messageQuery.sessionId = data.sessionId
+      await getSessionChatMessage()
+    }
   }
 })
 
@@ -106,7 +128,7 @@ const messageQuery = reactive<SessionChatMessageQuery>({
   page: 1,
   sessionId: '',
   limit: 5,
-  sort: 'desc',
+  sort: 'asc',
 })
 
 watch(
@@ -122,8 +144,6 @@ watch(
 )
 const getSessionChatMessage = async () => {
   const data = await sessionChatListApi(messageQuery)
-  console.log(data.records)
-  console.log(data.total)
   sessionChatList.value = data.records
   total.value = data.total
 }
@@ -154,6 +174,8 @@ const deleteSession = (session: SessionItem) => {
         type: 'success',
         message: 'Delete success',
       })
+      messageQuery.sessionId = ''
+      sessionChatList.value = []
       getSessionList()
     } else {
       ElMessage({

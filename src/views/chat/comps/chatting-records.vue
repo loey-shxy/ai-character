@@ -14,19 +14,33 @@
             <!-- <div class="time">{{ item.time }}</div> -->
             <div class="message-popper">
               <div class="message">{{ item.txt }}</div>
-              <img v-if="item.from === RESP_FROM_TYPE.MODEL.v" src="@/assets/image/voice.png" />
+              <div class="mp3">
+                <img
+                  v-if="item.from === RESP_FROM_TYPE.MODEL.v"
+                  src="@/assets/image/voice.png"
+                  @click="playVideo(index)"
+                />
+                <audio :id="`audioRef${index}`">
+                  <source :src="item.txtVoice" type="audio/mpeg" />
+                </audio>
+              </div>
             </div>
           </div>
           <div v-else :key="index + 'p'" class="chat-content__list-message picture">
-            <div class="download-process">
-              <el-progress type="circle" :percentage="70" color="#E75175" status="exception">
-                <template #default="{ percentage }">
-                  <span class="percentage-value">{{ percentage }}%</span>
-                </template>
-              </el-progress>
-            </div>
-            <p class="wait">Please wait!</p>
-            <p class="sub-message">Alexis Ivyedge is taking a picture</p>
+            <template v-if="false">
+              <div class="download-process">
+                <el-progress type="circle" :percentage="70" color="#E75175" status="exception">
+                  <template #default="{ percentage }">
+                    <span class="percentage-value">{{ percentage }}%</span>
+                  </template>
+                </el-progress>
+              </div>
+              <p class="wait">Please wait!</p>
+              <p class="sub-message">Alexis Ivyedge is taking a picture</p>
+            </template>
+            <template v-else>
+              <el-image :src="item.previewPath" fit="cover"></el-image>
+            </template>
           </div>
         </template>
       </div>
@@ -40,7 +54,7 @@
         <el-form :model="form" inline>
           <el-form-item prop="reqTxt">
             <el-input v-model="form.reqTxt" placeholder="Type a message">
-              <template #suffix>
+              <!-- <template #suffix>
                 <el-dropdown
                   :popper-class="[
                     'profile-popper',
@@ -62,7 +76,7 @@
                     </el-dropdown-menu>
                   </template>
                 </el-dropdown>
-              </template>
+              </template> -->
             </el-input>
           </el-form-item>
           <el-form-item>
@@ -76,7 +90,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { reactive, withDefaults, defineProps } from 'vue'
+import { reactive, withDefaults, defineProps, defineEmits } from 'vue'
 import { ArrowDown } from '@element-plus/icons-vue'
 import { ModelItem, SessionChatMessage } from '@/interface'
 import { RESP_MESSAGE_TYPE, RESP_FROM_TYPE } from '@/common/constant'
@@ -99,6 +113,12 @@ const form = reactive({
   reqTxt: '',
 })
 
+const playVideo = (index: number) => {
+  const audioRef = document.getElementById(`audioRef${index}`) as HTMLAudioElement
+  audioRef?.play()
+}
+
+const emit = defineEmits(['refresh'])
 const sendMessage = async () => {
   if (form.reqTxt) {
     await sendMessageApi({
@@ -106,6 +126,7 @@ const sendMessage = async () => {
       modelId: props.model.id,
       reqTxt: form.reqTxt,
     })
+    emit('refresh')
   }
 }
 </script>

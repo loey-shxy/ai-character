@@ -130,6 +130,8 @@ export interface ChatMessage {
   uid: string // user id
   requestTxt: string // 收到的请求消息
   desc: string
+  res: SessionChatMessage
+  other: ModelItem
 }
 
 // send message
