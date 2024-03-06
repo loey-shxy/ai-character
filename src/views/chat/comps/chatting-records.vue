@@ -18,7 +18,7 @@
                 <img
                   v-if="item.from === RESP_FROM_TYPE.MODEL.v"
                   src="@/assets/image/voice.png"
-                  @click="playVideo(index)"
+                  @click="playVideo(`${index}`)"
                 />
                 <audio :id="`audioRef${index}`">
                   <source :src="item.txtVoice" type="audio/mpeg" />
@@ -26,21 +26,47 @@
               </div>
             </div>
           </div>
-          <div v-else :key="index + 'p'" class="chat-content__list-message picture">
-            <template v-if="false">
-              <div class="download-process">
-                <el-progress type="circle" :percentage="70" color="#E75175" status="exception">
-                  <template #default="{ percentage }">
-                    <span class="percentage-value">{{ percentage }}%</span>
-                  </template>
-                </el-progress>
+          <div
+            v-else
+            :key="index + 'p'"
+            :class="[
+              'chat-content__list-message',
+              item.from === RESP_FROM_TYPE.MODEL.v ? 'reply' : 'send',
+            ]"
+          >
+            <div class="message-popper">
+              <div class="message">{{ item.txt || item.respTxt }}</div>
+              <div class="mp3">
+                <img
+                  v-if="item.from === RESP_FROM_TYPE.MODEL.v"
+                  src="@/assets/image/voice.png"
+                  @click="playVideo(`${index}p`)"
+                />
+                <audio :id="`audioRef${index}p`">
+                  <source :src="item.txtVoice || item.respTxtVoice" type="audio/mpeg" />
+                </audio>
               </div>
-              <p class="wait">Please wait!</p>
-              <p class="sub-message">Alexis Ivyedge is taking a picture</p>
-            </template>
-            <template v-else>
-              <el-image :src="item.previewPath" fit="cover"></el-image>
-            </template>
+            </div>
+            <div class="chat-content__list-message picture">
+              <!-- <template v-if="false">
+                <div class="download-process">
+                  <el-progress type="circle" :percentage="70" color="#E75175" status="exception">
+                    <template #default="{ percentage }">
+                      <span class="percentage-value">{{ percentage }}%</span>
+                    </template>
+                  </el-progress>
+                </div>
+                <p class="wait">Please wait!</p>
+                <p class="sub-message">Alexis Ivyedge is taking a picture</p>
+              </template> -->
+              <!-- <template v-else> -->
+              <el-image
+                :src="item.previewPath"
+                fit="cover"
+                :preview-src-list="item.sourcePath"
+              ></el-image>
+              <!-- </template> -->
+            </div>
           </div>
         </template>
       </div>
@@ -51,7 +77,7 @@
         <div class="suggestion-value">Always up for a chat. What's new?</div>
       </div>
       <div class="form-wrap">
-        <el-form :model="form" inline>
+        <el-form :model="form" inline @keyup.enter.prevent="sendMessage">
           <el-form-item prop="reqTxt">
             <el-input v-model="form.reqTxt" placeholder="Type a message">
               <!-- <template #suffix>
@@ -113,7 +139,7 @@ const form = reactive({
   reqTxt: '',
 })
 
-const playVideo = (index: number) => {
+const playVideo = (index: string) => {
   const audioRef = document.getElementById(`audioRef${index}`) as HTMLAudioElement
   audioRef?.play()
 }
@@ -121,12 +147,20 @@ const playVideo = (index: number) => {
 const emit = defineEmits(['refresh'])
 const sendMessage = async () => {
   if (form.reqTxt) {
-    await sendMessageApi({
+    const data = await sendMessageApi({
       sessionId: props.sessionId,
       modelId: props.model.id,
       reqTxt: form.reqTxt,
     })
-    emit('refresh')
+    // eslint-disable-next-line vue/no-mutating-props
+    props.sessionChatList.push({
+      from: RESP_FROM_TYPE.USER.v,
+      type: RESP_MESSAGE_TYPE.VOICE.v,
+      txt: form.reqTxt,
+    })
+    form.reqTxt = ''
+    // eslint-disable-next-line vue/no-mutating-props
+    props.sessionChatList.push(data.res)
   }
 }
 </script>

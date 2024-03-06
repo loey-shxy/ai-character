@@ -261,15 +261,16 @@
       overflow-y: auto;
     }
     &__model-list {
+      grid-template-columns: repeat(2, 1fr);
       &_item {
-        width: 50%;
-        padding: 75px 46px;
+        padding: 40px 22px;
+        border-bottom: 1px solid #262626;
         &:nth-of-type(2n+1) {
           border-right: 1px solid #262626;
         }
         .model-photo-box {
           border-radius: 18px;
-          height: 350px;
+          height: 450px;
         }
         .model-name {
           font-size: 30px;

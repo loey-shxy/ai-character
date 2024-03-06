@@ -3,7 +3,9 @@
   padding: 0;
   font-family: Poppins, Poppins;
 }
-
+.maw-w-1280 {
+  max-width: 1280px;
+}
 body,
 html,
 #app {
@@ -228,11 +230,12 @@ html,
     }
   }
   &__model-list {
-    display: flex;
-    flex-wrap: wrap;
+    // display: flex;
+    // flex-wrap: wrap;
+    display: grid;
     &_item {
       box-sizing: border-box;
-      border-bottom: 1px solid #262626;
+      // border-bottom: 1px solid #262626;
       .model-photo-box {
         background: linear-gradient(0deg, #131313 0%, rgba(0,0,0,0) 100%);
         overflow: hidden;

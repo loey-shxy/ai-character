@@ -82,6 +82,7 @@ const login = async () => {
     const userInfo = await userInfoApi()
     setUserInfo(userInfo)
     removeGuestToken()
+    // ageVisible.value = true
     router.push({ name: 'explore' })
   } else {
     ElMessage({

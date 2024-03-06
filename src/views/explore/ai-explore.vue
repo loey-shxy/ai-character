@@ -35,7 +35,7 @@
       </div>
     </div>
     <div class="explore__model-wrap scroll-bar" @scroll="handleScroll($event)">
-      <div class="explore__model-list">
+      <div :class="['explore__model-list', !$isMobile && 'maw-w-1280']">
         <div
           v-for="item in modelList"
           :key="item.id"
@@ -65,6 +65,11 @@ import { ref, reactive, watch, onMounted } from 'vue'
 import { getModelListApi } from '@/apis'
 import { ModelItem, ModelListQuery, ModelType } from '@/interface'
 import { useRouter } from 'vue-router'
+import { removeToken, hasToken } from '@/utils/cookie'
+
+const isLogin = computed(() => {
+  return hasToken()
+})
 
 // ai characters query
 const total = ref(0)
@@ -130,6 +135,9 @@ onMounted(async () => {
 
 const router = useRouter()
 const createSession = (model: ModelItem) => {
+  if (!isLogin.value) {
+    return
+  }
   router.push({
     name: 'chat',
     query: {

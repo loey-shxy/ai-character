@@ -16,7 +16,7 @@
     </div>
     <template #footer>
       <span class="dialog-footer">
-        <el-button type="primary" @click="login">I am over 18 years old - login</el-button>
+        <el-button type="primary" @click="toHome">I am over 18 years old - login</el-button>
         <el-button type="info" @click="exit">I am under 18- Exit</el-button>
       </span>
     </template>
@@ -24,6 +24,7 @@
 </template>
 <script setup lang="ts">
 import { ref, defineProps, defineEmits, watch } from 'vue'
+import { useRouter } from 'vue-router'
 
 interface Props {
   visible: boolean
@@ -40,8 +41,10 @@ const close = () => {
   dialogVisible.value = false
 }
 
-const login = () => {
+const router = useRouter()
+const toHome = () => {
   dialogVisible.value = false
+  router.push({ name: 'explore' })
 }
 
 const exit = () => {
