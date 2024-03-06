@@ -39,8 +39,6 @@
         <router-link :to="{ name: 'terms-of-service' }">Terms of Service</router-link>
       </div>
     </el-form>
-
-    <AgeVerification v-model:visible="ageVisible" />
   </div>
 </template>
 <script setup lang="ts">
@@ -48,12 +46,10 @@ import { reactive, ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import type { FormInstance, FormRules } from 'element-plus'
 import { SignInParams } from '@/interface'
-import AgeVerification from '@/components/age-verification/age-verification.vue'
 import { signInApi, signUpApi, userInfoApi } from '@/apis'
 import { setToken, removeGuestToken, setUserInfo } from '@/utils/cookie'
 import { ElMessage } from 'element-plus'
 
-const ageVisible = ref(false)
 const ruleFormRef = ref<FormInstance>()
 const form = reactive<SignInParams>({
   username: '',
@@ -82,7 +78,6 @@ const login = async () => {
     const userInfo = await userInfoApi()
     setUserInfo(userInfo)
     removeGuestToken()
-    // ageVisible.value = true
     router.push({ name: 'explore' })
   } else {
     ElMessage({

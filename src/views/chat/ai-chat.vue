@@ -1,5 +1,5 @@
 <template>
-  <div class="chat" :style="{ height: pageHeight }">
+  <div class="chat">
     <div v-if="!$isMobile" class="model-list__wrap">
       <div class="model-list__content">
         <el-input v-model="keyword" placeholder="Search..." :prefix-icon="Search" />
@@ -16,7 +16,7 @@
               </div>
               <div class="model-name">
                 <div class="model-name__name">{{ item.model.name }}</div>
-                <div class="model-name__message text-line-clamp text-line-clamp__3">
+                <div class="model-name__message text-line-clamp text-line-clamp__1">
                   {{ item.model.desc }}
                 </div>
               </div>
@@ -57,7 +57,13 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import ChattingRecords from './comps/chatting-records.vue'
 import ChatModelInfo from './comps/chat-model-info.vue'
 import { ModelItem, SessionChatMessage, SessionChatMessageQuery, SessionItem } from '@/interface'
-import { createSessionApi, deleteSessionApi, refreshSessionApi, sessionChatListApi, userSessionListApi } from '@/apis'
+import {
+  createSessionApi,
+  deleteSessionApi,
+  refreshSessionApi,
+  sessionChatListApi,
+  userSessionListApi,
+} from '@/apis'
 
 const selectedModel = ref<ModelItem>()
 
@@ -80,11 +86,13 @@ const ensureModelId = () => {
   const id = route.query.id as string
   if (id) {
     const existsItem = sessionList.value?.find((item) => item.model.id === id) as SessionItem
+    console.log(existsItem)
     if (existsItem && id === existsItem.model.id) {
       messageQuery.sessionId = existsItem.id
       return existsItem.model
     }
     const model = create(id)
+    console.log(124)
     return model
   }
 
@@ -153,7 +161,6 @@ const messageQuery = reactive<SessionChatMessageQuery>({
 watch(
   () => messageQuery,
   () => {
-    console.log(messageQuery)
     if (messageQuery.sessionId) {
       getSessionChatMessage()
     }
@@ -188,45 +195,48 @@ const deleteSession = (session: SessionItem) => {
     confirmButtonText: 'OK',
     cancelButtonText: 'Cancel',
     type: 'warning',
+  }).then(async () => {
+    const { code, msg } = await deleteSessionApi(session.id)
+    if (code === 1000) {
+      ElMessage({
+        type: 'success',
+        message: 'Delete success',
+      })
+      messageQuery.sessionId = ''
+      sessionChatList.value = []
+      router.replace({ name: 'chat' })
+      getSessionList()
+    } else {
+      ElMessage({
+        type: 'warning',
+        message: msg,
+      })
+    }
   })
-    .then(async () => {
-      const { code, msg } = await deleteSessionApi(session.id)
-      if (code === 1000) {
-        ElMessage({
-          type: 'success',
-          message: 'Delete success',
-        })
-        messageQuery.sessionId = ''
-        sessionChatList.value = []
-        getSessionList()
-      } else {
-        ElMessage({
-          type: 'warning',
-          message: msg,
-        })
-      }
-    })
-    .then(async () => {
-      const { code, msg } = await deleteSessionApi(session.id)
-      if (code === 1000) {
-        ElMessage({
-          type: 'success',
-          message: 'Delete success',
-        })
-        getSessionList()
-      } else {
-        ElMessage({
-          type: 'error',
-          message: msg,
-        })
-      }
-    })
+  // .then(async () => {
+  //   const { code, msg } = await deleteSessionApi(session.id)
+  //   if (code === 1000) {
+  //     ElMessage({
+  //       type: 'success',
+  //       message: 'Delete success',
+  //     })
+  //     getSessionList()
+  //   } else {
+  //     ElMessage({
+  //       type: 'error',
+  //       message: msg,
+  //     })
+  //   }
+  // })
 }
 
 const router = useRouter()
 const toDetail = () => {
   if (globalProperties.$isMobile) {
-    router.push({ name: 'characters-detail' })
+    router.push({
+      name: 'characters-detail',
+      query: { model: JSON.stringify(selectedModel.value) },
+    })
   }
 }
 </script>

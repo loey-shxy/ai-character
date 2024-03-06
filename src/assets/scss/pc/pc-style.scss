@@ -3,9 +3,15 @@
   overflow: hidden;
   // 布局
   .layout {
+    min-height: 100vh;
     .container {
       display: flex;
-      height: calc(100% - 87px);
+      &.h {
+        height: calc(100vh - 87px);
+      }
+      &.m-h {
+        min-height: calc(100vh - 87px);
+      }
       .aside {
         width: 103px;
         border-right: 1px solid #363636;
@@ -15,7 +21,7 @@
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        height: calc(100% - 87px);
+        min-height: calc(100vh - 87px);
       }
     }
   }
@@ -109,6 +115,8 @@
     justify-content: space-around;
     padding: 30px 0;
     overflow: hidden;
+    box-sizing: border-box;
+    height: 280px;
     &::before {
       position: absolute;
       content: "";
@@ -134,7 +142,7 @@
     }
     &__left {
       padding: 0 140px 0 60px;
-      width: 1013px;
+      width: 60%;
       box-sizing: border-box;
       .logo {
         display: flex;
@@ -154,7 +162,7 @@
         font-size: 20px;
         line-height: 30px;
         color: #fff;
-        margin-top: 35px;
+        margin-top: 20px;
       }
       .copyright {
         font-size: 20px;
@@ -167,7 +175,7 @@
       }
     }
     &__right {
-      flex: 1;
+      width: 30%;
       display: flex;
       padding-top: 23px;
       padding-left: 200px;
@@ -181,7 +189,7 @@
           line-height: 26px;
         }
         .link-group {
-          margin-top: 20px;
+          margin-top: 16px;
           display: flex;
           flex-wrap: wrap;
           .link-item {
@@ -335,7 +343,7 @@
   // explore
   .explore {
     // position: relative;
-    // height: 100%;
+    min-height: calc(100% - 280px);
     &__model-type {
       height: 388px;
       padding: 111px 0 107px 0;
@@ -367,25 +375,16 @@
         }
       }
     }
-    &__model-wrap {
-      // position: absolute;
-      // top: 388px;
-      // left: 0;
-      // right: 0;
-      // height: calc(100% - 388px);
-      // overflow-y: auto;
-    }
     &__model-list {
       margin: 0 auto;
-      grid-template-columns: repeat(4, 1fr);
-      grid-row-gap: 20px;
-      grid-column-gap: 40px;
-      padding: 20px 0;
+      // grid-template-columns: repeat(4, 360px);
+      // grid-row-gap: 72px;
+      // grid-column-gap: 92px;
+      padding:35px 0;
       &_item {
-        // width: 25%;
-        // padding: 40px 22px;
-        // border-right: 1px solid #262626;
         cursor: pointer;
+        width: 361px;
+        margin: 35px 40px;
         .model-photo-box {
           border-radius: 20px;
           height: 383px;
@@ -437,6 +436,7 @@
   // chat
   .chat {
     display: flex;
+    height: calc(100% - 280px);
     .model-list__wrap {
       width: 27%;
       box-sizing: border-box;
@@ -494,8 +494,6 @@
         margin-top: 6px;
         overflow-y: auto;
         max-height: calc(100% - 70px);
-        width: 102%;
-        padding-right: 20px;
         &__item {
           margin-top: 20px;
           display: flex;
@@ -795,8 +793,12 @@
   }
   // subscription 
   .subscription {
-    padding: 69px 0 120px;
     position: relative;
+    box-sizing: border-box;
+    height: calc(100% - 280px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
     .model-image {
       position: absolute;
       &.left {

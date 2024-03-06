@@ -1,5 +1,7 @@
 import { createApp } from 'vue'
 import '@/assets/scss/style.scss'
+import '@/assets/scss/pc/pc-style.scss'
+import '@/assets/scss/mobile/mobile-style.scss'
 import App from './App.vue'
 import router from './router'
 import 'lib-flexible/flexible.js'
@@ -13,13 +15,8 @@ const pinia = createPinia()
 const clientWidth = document.body.clientWidth
 const isMobile =
   /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
-  clientWidth <= 1000
+  clientWidth <= 1200
 app.config.globalProperties.$isMobile = isMobile
-if (isMobile) {
-  import('@/assets/scss/mobile-style.scss')
-} else {
-  import('@/assets/scss/pc-style.scss')
-}
 
 app
   .use(router)

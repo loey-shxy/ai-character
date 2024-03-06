@@ -35,7 +35,7 @@
       </div>
     </div>
     <div class="explore__model-wrap scroll-bar" @scroll="handleScroll($event)">
-      <div :class="['explore__model-list', !$isMobile && 'maw-w-1280']">
+      <div :class="['explore__model-list', !$isMobile && 'maw-w-1920']">
         <div
           v-for="item in modelList"
           :key="item.id"
@@ -58,19 +58,44 @@
         </div>
       </div>
     </div>
+    <AgeVerification v-model:visible="ageVisible" />
   </div>
 </template>
 <script setup lang="ts">
 import { ref, reactive, watch, onMounted } from 'vue'
-import { getModelListApi } from '@/apis'
+import { getModelListApi, signInApi } from '@/apis'
 import { ModelItem, ModelListQuery, ModelType } from '@/interface'
 import { useRouter } from 'vue-router'
-import { removeToken, hasToken } from '@/utils/cookie'
+import { setGuestToken, hasToken, getGuestToken } from '@/utils/cookie'
+import AgeVerification from '@/components/age-verification/age-verification.vue'
 
 const isLogin = computed(() => {
   return hasToken()
 })
 
+const isGuestLogin = computed(() => {
+  return getGuestToken()
+})
+
+const guestLogin = async () => {
+  const { data, code, msg } = await signInApi({
+    username: '',
+    password: '',
+    passport: 'FRONT-GUEST',
+  })
+
+  if (code === 1000) {
+    setGuestToken(`Friend ${data.token}`)
+    getModelList()
+  } else {
+    ElMessage({
+      type: 'error',
+      message: msg,
+    })
+  }
+}
+
+const ageVisible = ref(false)
 // ai characters query
 const total = ref(0)
 const params = reactive<ModelListQuery>({
@@ -92,7 +117,6 @@ watch(
     getModelList()
   },
   {
-    immediate: true,
     deep: true,
   }
 )
@@ -131,19 +155,27 @@ onMounted(async () => {
       params.page++
     }
   })
+
+  if (!isLogin.value && !isGuestLogin.value) {
+    guestLogin()
+    ageVisible.value = true
+  }
+
+  if (isGuestLogin.value || isLogin.value) {
+    getModelList()
+  }
 })
 
 const router = useRouter()
 const createSession = (model: ModelItem) => {
-  if (!isLogin.value) {
-    return
+  if (isLogin.value) {
+    router.push({
+      name: 'chat',
+      query: {
+        id: model.id,
+      },
+    })
   }
-  router.push({
-    name: 'chat',
-    query: {
-      id: model.id,
-    },
-  })
 }
 </script>
 <style lang="scss"></style>

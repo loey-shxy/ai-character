@@ -59,6 +59,7 @@
     </div>
 
     <ContactUs v-model:visible="contactVisible" />
+    <AgeVerification v-model:visible="ageVisible" />
   </div>
 </template>
 <script setup lang="ts">
@@ -68,7 +69,9 @@ import { useRouter } from 'vue-router'
 import ContactUs from '@/components/contact-us/contact-us.vue'
 import { DropdownMenu } from '@/interface'
 import { removeToken, hasToken } from '@/utils/cookie'
+import AgeVerification from '@/components/age-verification/age-verification.vue'
 
+const ageVisible = ref(false)
 const router = useRouter()
 const isLogin = computed(() => {
   return hasToken()

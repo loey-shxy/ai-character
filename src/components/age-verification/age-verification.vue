@@ -16,7 +16,7 @@
     </div>
     <template #footer>
       <span class="dialog-footer">
-        <el-button type="primary" @click="toHome">I am over 18 years old - login</el-button>
+        <el-button type="primary" @click="toLogin">I am over 18 years old - login</el-button>
         <el-button type="info" @click="exit">I am under 18- Exit</el-button>
       </span>
     </template>
@@ -42,9 +42,9 @@ const close = () => {
 }
 
 const router = useRouter()
-const toHome = () => {
+const toLogin = () => {
   dialogVisible.value = false
-  router.push({ name: 'explore' })
+  router.push({ name: 'sign-in' })
 }
 
 const exit = () => {

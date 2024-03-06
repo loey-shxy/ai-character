@@ -3,7 +3,7 @@
   padding: 0;
   font-family: Poppins, Poppins;
 }
-.maw-w-1280 {
+.maw-w-1920 {
   max-width: 1280px;
 }
 body,
@@ -53,6 +53,9 @@ html,
   }
   &__3 {
     -webkit-line-clamp: 3;
+  }
+  &__1 {
+    -webkit-line-clamp: 1;
   }
   &__6 {
     -webkit-line-clamp: 6;
@@ -230,9 +233,9 @@ html,
     }
   }
   &__model-list {
-    // display: flex;
-    // flex-wrap: wrap;
-    display: grid;
+    display: flex;
+    flex-wrap: wrap;
+    // display: grid;
     &_item {
       box-sizing: border-box;
       // border-bottom: 1px solid #262626;

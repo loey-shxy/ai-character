@@ -15,6 +15,7 @@
 </template>
 <script setup lang="ts">
 import { reactive, computed, getCurrentInstance } from 'vue'
+import { ElMessage } from 'element-plus'
 const {
   appContext: {
     config: { globalProperties },
@@ -41,7 +42,9 @@ const getIcon = (icon: string) => {
         ? new URL('@/assets/image/explore-active.png', import.meta.url).href
         : new URL('@/assets/image/explore.png', import.meta.url).href
     case 'chat':
-      return currentRouter.value === 'chat' || !globalProperties.$isMobile
+      return currentRouter.value === 'chat' ||
+        currentRouter.value === 'characters-detail' ||
+        !globalProperties.$isMobile
         ? new URL('@/assets/image/chat-active.png', import.meta.url).href
         : new URL('@/assets/image/chat.png', import.meta.url).href
     case 'gallery':
@@ -58,6 +61,13 @@ const getIcon = (icon: string) => {
 }
 
 const openMenu = (path: string) => {
+  if (path === 'chat') {
+    ElMessage({
+      type: 'warning',
+      message: 'Please sign in first',
+    })
+    return
+  }
   router.push({ name: path })
 }
 </script>
