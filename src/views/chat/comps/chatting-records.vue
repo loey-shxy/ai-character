@@ -63,7 +63,9 @@
               <el-image
                 :src="item.previewPath"
                 fit="cover"
-                :preview-src-list="item.sourcePath"
+                :preview-src-list="
+                  typeof item.sourcePath === 'string' ? [item.sourcePath] : item.sourcePath
+                "
               ></el-image>
               <!-- </template> -->
             </div>
