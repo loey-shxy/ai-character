@@ -57,13 +57,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import ChattingRecords from './comps/chatting-records.vue'
 import ChatModelInfo from './comps/chat-model-info.vue'
 import { ModelItem, SessionChatMessage, SessionChatMessageQuery, SessionItem } from '@/interface'
-import {
-  createSessionApi,
-  deleteSessionApi,
-  refreshSessionApi,
-  sessionChatListApi,
-  userSessionListApi,
-} from '@/apis'
+import { createSessionApi, deleteSessionApi, refreshSessionApi, sessionChatListApi, userSessionListApi } from '@/apis'
 
 const selectedModel = ref<ModelItem>()
 
@@ -79,6 +73,7 @@ const getSessionList = async () => {
   sessionList.value = await userSessionListApi()
   selectedModel.value = ensureModelId() as ModelItem
   scrollToBottom()
+  changeModel(findSessionByModel(selectedModel.value))
 }
 
 const ensureModelId = () => {
@@ -92,12 +87,13 @@ const ensureModelId = () => {
     const model = create(id)
     return model
   }
-  // if (!sessionList.value) {
-  //   return {} as ModelItem
-  // }
 
   const lastItem = sessionList.value[sessionList.value.length - 1] as SessionItem
   return lastItem.model
+}
+
+const findSessionByModel = (model: ModelItem) => {
+  return sessionList.value?.find((item) => item.model.id === model.id) as SessionItem
 }
 
 const create = async (modelId: string) => {
@@ -120,13 +116,6 @@ const scrollToBottom = () => {}
 
 const route = useRoute()
 onMounted(async () => {
-  //todo 步骤
-  /**
-   * 1. 获取会话列表
-   * 2. 如果选中的模型存在，继续使用sessionid
-   * 3. 如果不存在，启用新的session
-   * 4. 重新获取会话列表
-   */
   await getSessionList()
 })
 
@@ -134,6 +123,7 @@ onMounted(async () => {
 const changeModel = async (session: SessionItem) => {
   selectedModel.value = session.model
   messageQuery.sessionId = session.id
+  router.push({ name: 'chat', query: { id: session.model.id } })
 }
 
 const total = ref(0)
@@ -148,6 +138,7 @@ const messageQuery = reactive<SessionChatMessageQuery>({
 watch(
   () => messageQuery,
   () => {
+    console.log(messageQuery)
     if (messageQuery.sessionId) {
       getSessionChatMessage()
     }
@@ -156,6 +147,7 @@ watch(
     deep: true,
   }
 )
+
 const getSessionChatMessage = async () => {
   const data = await sessionChatListApi(messageQuery)
   sessionChatList.value = data.records
