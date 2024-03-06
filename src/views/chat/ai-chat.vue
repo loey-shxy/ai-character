@@ -50,7 +50,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { getCurrentInstance, onMounted, ref, watch } from 'vue'
+import { getCurrentInstance, onMounted, ref, watch, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { Search } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
@@ -118,6 +118,7 @@ const create = async (modelId: string) => {
 }
 const scrollToBottom = () => {}
 
+const pageHeight = ref('100%')
 const route = useRoute()
 onMounted(async () => {
   //todo 步骤
@@ -128,7 +129,21 @@ onMounted(async () => {
    * 4. 重新获取会话列表
    */
   await getSessionList()
+  if (!globalProperties.$isMobile) {
+    nextTick(() => {
+      setPageHeight()
+    })
+  }
 })
+
+const setPageHeight = () => {
+  const header = document.querySelector('.page-header')
+  const footer = document.querySelector('.page-footer')
+  const headerH = header?.clientHeight || 0
+  const footerH = footer?.clientHeight || 0
+  const clientHeight = document.documentElement.clientHeight
+  pageHeight.value = clientHeight - headerH - footerH + 'px'
+}
 
 // 获取会话历史信息
 const changeModel = async (session: SessionItem) => {

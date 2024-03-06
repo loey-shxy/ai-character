@@ -1,5 +1,6 @@
 <template>
-  <div class="model-info">
+  <div class="model-info scroll-bar">
+    <!-- <div class="model-info__box"> -->
     <div class="model-info__photo-list">
       <el-carousel :autoplay="false" arrow="always">
         <el-carousel-item v-for="img in modelImgs" :key="img">
@@ -34,6 +35,7 @@
         </div>
       </div>
     </div>
+    <!-- </div> -->
   </div>
 </template>
 <script setup lang="ts">

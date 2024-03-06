@@ -1,20 +1,21 @@
 .pc {
   min-height: 100vh;
+  overflow: hidden;
   // 布局
   .layout {
     .container {
       display: flex;
-      min-height: 100vh;
+      height: calc(100% - 87px);
       .aside {
         width: 103px;
         border-right: 1px solid #363636;
       }
       .content-wrap {
         flex: 1;
-        min-height: 100vh;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
+        height: calc(100% - 87px);
       }
     }
   }
@@ -436,7 +437,6 @@
   // chat
   .chat {
     display: flex;
-    min-height: 100vh;
     .model-list__wrap {
       width: 27%;
       box-sizing: border-box;
@@ -564,8 +564,8 @@
     .model-info {
       width: 23%;
       background-color: #1a1a1a;
+      overflow-y: auto;
       border-left: 1px solid #363636;
-      min-height: 100vh;
       .model-info__photo-list {
         height: 572px;
         .el-carousel__button {
