@@ -118,8 +118,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { reactive, withDefaults, defineProps, defineEmits } from 'vue'
-import { ArrowDown } from '@element-plus/icons-vue'
+import { reactive, withDefaults, defineProps, defineEmits, ref, onUpdated } from 'vue'
 import { ModelItem, SessionChatMessage } from '@/interface'
 import { RESP_MESSAGE_TYPE, RESP_FROM_TYPE } from '@/common/constant'
 import { sendMessageApi } from '@/apis'
@@ -136,7 +135,6 @@ const props = withDefaults(
     sessionChatList: () => [],
   }
 )
-
 const form = reactive({
   reqTxt: '',
 })
@@ -165,4 +163,13 @@ const sendMessage = async () => {
     props.sessionChatList.push(data.res)
   }
 }
+
+const scrollToBottom = () => {
+  const container = document.getElementsByClassName('chat-content')[0]
+  container.scrollTop = container.scrollHeight + 10
+}
+
+onUpdated(scrollToBottom)
+
+defineExpose({ scrollToBottom })
 </script>
