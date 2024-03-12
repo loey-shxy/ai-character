@@ -4,7 +4,7 @@
       <div class="logo">
         <img src="@/assets/image/logo.png" alt="" />
       </div>
-      <h2 class="system-name">Dashcube</h2>
+      <h2 class="system-name">Fanschat</h2>
       <div v-if="!$isMobile && showSex" class="sex-group">
         <div
           :class="['sex-item', selectSex === 'female' && 'is-active']"
@@ -59,7 +59,6 @@
     </div>
 
     <ContactUs v-model:visible="contactVisible" />
-    <AgeVerification v-model:visible="ageVisible" />
   </div>
 </template>
 <script setup lang="ts">
@@ -69,9 +68,7 @@ import { useRouter } from 'vue-router'
 import ContactUs from '@/components/contact-us/contact-us.vue'
 import { DropdownMenu } from '@/interface'
 import { removeToken, hasToken } from '@/utils/cookie'
-import AgeVerification from '@/components/age-verification/age-verification.vue'
 
-const ageVisible = ref(false)
 const router = useRouter()
 const isLogin = computed(() => {
   return hasToken()
@@ -89,7 +86,7 @@ const changeSex = (sex: string) => {
 const dropdownMenu = reactive<DropdownMenu[]>([
   { label: 'Gallery', icon: 'gallery-down', path: 'gallery' },
   { label: 'Subscription', icon: 'subscription-down', path: 'subscription' },
-  { label: 'Settings', icon: 'setting', path: '' },
+  { label: 'Settings', icon: 'setting', path: 'setting' },
   { label: 'Contact', icon: 'contact', path: '' },
   { label: 'Logout', icon: 'logout', path: '' },
 ])

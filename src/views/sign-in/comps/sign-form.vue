@@ -6,6 +6,7 @@
       :rules="rules"
       label-position="top"
       hide-required-asterisk
+      @keyup.enter.prevent="submitForm(ruleFormRef)"
     >
       <el-form-item label="Email" prop="username">
         <el-input v-model="form.username" placeholder="Please enter the login username">

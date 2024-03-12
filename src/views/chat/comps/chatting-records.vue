@@ -16,7 +16,7 @@
               <div class="message">{{ item.txt }}</div>
               <div class="mp3">
                 <img
-                  v-if="item.from === RESP_FROM_TYPE.MODEL.v"
+                  v-if="item.from === RESP_FROM_TYPE.MODEL.v && item.txtVoice"
                   src="@/assets/image/voice.png"
                   @click="playVideo(`${index}`)"
                 />
@@ -38,7 +38,9 @@
               <div class="message">{{ item.txt || item.respTxt }}</div>
               <div class="mp3">
                 <img
-                  v-if="item.from === RESP_FROM_TYPE.MODEL.v"
+                  v-if="
+                    item.from === RESP_FROM_TYPE.MODEL.v && (item.txtVoice || item.respTxtVoice)
+                  "
                   src="@/assets/image/voice.png"
                   @click="playVideo(`${index}p`)"
                 />
@@ -63,6 +65,8 @@
               <el-image
                 :src="item.previewPath"
                 fit="cover"
+                close-on-press-escape
+                hide-on-click-modal
                 :preview-src-list="
                   typeof item.sourcePath === 'string' ? [item.sourcePath] : item.sourcePath
                 "
@@ -73,11 +77,11 @@
         </template>
       </div>
     </div>
-    <div class="chat-content__footer">
-      <div class="suggestion">
+    <div v-if="sessionId" class="chat-content__footer">
+      <!-- <div class="suggestion">
         <div class="suggestion-label">Suggestion：</div>
         <div class="suggestion-value">Always up for a chat. What's new?</div>
-      </div>
+      </div> -->
       <div class="form-wrap">
         <el-form :model="form" inline @keyup.enter.prevent="sendMessage">
           <el-form-item prop="reqTxt">

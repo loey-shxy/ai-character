@@ -46,6 +46,14 @@ export interface UserDetail {
   account: string
   roles: string[]
   data: {}
+  subInfo: UserSettingSubInfo
+}
+
+export interface UserSettingSubInfo {
+  subKey: string // 当前订阅key
+  plan: string // 当前订阅计划
+  paymentAt: string // 订阅支付时间
+  endAt: string // 订阅到期时间
 }
 
 // 留言
@@ -200,4 +208,21 @@ export interface SessionChatParams {
   sessionId: string
   modelId: string
   newSession: number // 新会话 1 是 0 否
+}
+
+export interface Gallery {
+  model: ModelSimple
+  records: MediaImageSimple[]
+}
+
+export interface ModelSimple {
+  id: string
+  name: string
+}
+
+export interface MediaImageSimple {
+  type: number
+  from: number
+  previewPath: string
+  sourcePath: string
 }

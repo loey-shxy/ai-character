@@ -61,13 +61,13 @@ const getIcon = (icon: string) => {
 }
 
 const openMenu = (path: string) => {
-  if (path === 'chat') {
-    ElMessage({
-      type: 'warning',
-      message: 'Please sign in first',
-    })
-    return
-  }
+  // if (path === 'chat') {
+  //   ElMessage({
+  //     type: 'warning',
+  //     message: 'Please sign in first',
+  //   })
+  //   return
+  // }
   router.push({ name: path })
 }
 </script>

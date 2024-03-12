@@ -64,6 +64,7 @@ import {
   sessionChatListApi,
   userSessionListApi,
 } from '@/apis'
+import { isEmpty } from 'lodash'
 
 const selectedModel = ref<ModelItem>()
 
@@ -79,25 +80,25 @@ const getSessionList = async () => {
   sessionList.value = await userSessionListApi()
   selectedModel.value = ensureModelId() as ModelItem
   scrollToBottom()
-  changeModel(findSessionByModel(selectedModel.value))
+  if (!isEmpty(selectedModel.value)) {
+    changeModel(findSessionByModel(selectedModel.value))
+  }
 }
 
 const ensureModelId = () => {
   const id = route.query.id as string
   if (id) {
     const existsItem = sessionList.value?.find((item) => item.model.id === id) as SessionItem
-    console.log(existsItem)
     if (existsItem && id === existsItem.model.id) {
       messageQuery.sessionId = existsItem.id
       return existsItem.model
     }
     const model = create(id)
-    console.log(124)
     return model
   }
 
   const lastItem = sessionList.value[sessionList.value.length - 1] as SessionItem
-  return lastItem.model
+  return lastItem && lastItem.model ? lastItem.model : {}
 }
 
 const findSessionByModel = (model: ModelItem) => {

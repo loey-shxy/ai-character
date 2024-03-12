@@ -1,7 +1,7 @@
 <template>
   <div class="model-info scroll-bar">
     <div class="model-info__photo-list">
-      <el-carousel :autoplay="false" arrow="always">
+      <el-carousel :autoplay="false" :arrow="modelImgs.length > 1 ? 'always' : 'never'">
         <el-carousel-item v-for="img in modelImgs" :key="img">
           <el-image :src="img.preview" fit="cover" />
         </el-carousel-item>
@@ -77,10 +77,10 @@ const personalAttributes = reactive([
     key: 'hobbies',
     icon: new URL('@/assets/image/hobbies.png', import.meta.url).href,
   },
-  {
-    label: 'RELATIONSHIP',
-    key: 'relationship',
-    icon: new URL('@/assets/image/relationship.png', import.meta.url).href,
-  },
+  // {
+  //   label: 'RELATIONSHIP',
+  //   key: 'relationship',
+  //   icon: new URL('@/assets/image/relationship.png', import.meta.url).href,
+  // },
 ])
 </script>

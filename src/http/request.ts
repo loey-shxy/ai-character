@@ -1,5 +1,5 @@
 import es6Promise from 'es6-promise'
-import axios, { AxiosInstance, AxiosResponse } from 'axios'
+import axios, { AxiosInstance, AxiosResponse, AxiosRequestConfig } from 'axios'
 import { hasToken, getToken, removeToken, getGuestToken, hasGuestToken } from '@/utils/cookie'
 import { ElMessage, ElLoading } from 'element-plus'
 import router from '@/router'
@@ -10,6 +10,10 @@ let tokenIsInvalid = false
 const loadingOptions = { fullscreen: true, background: 'rgba(0, 0, 0, 0.5)' }
 let loadingTimer: any = null // loading 定时器
 let loadingOpenedCount = 0 // loading 打开次数
+
+export interface RequestConfig extends AxiosRequestConfig {
+  loading?: boolean
+}
 
 /**
  * @description 响应
@@ -34,15 +38,19 @@ const instance: AxiosInstance = axios.create({
 
 // 添加请求拦截器
 instance.interceptors.request.use(
-  (config) => {
-    clearTimeout(loadingTimer)
-    loadingOpenedCount++
+  (config: RequestConfig) => {
+    if (config.loading) {
+      clearTimeout(loadingTimer)
+      loadingOpenedCount++
+    }
     if (hasGuestToken()) {
       config.headers.Authorization = getGuestToken()
     } else if (hasToken() && config.headers) {
       config.headers.Authorization = getToken()
     }
-    ElLoading.service(loadingOptions)
+    if (config.loading) {
+      ElLoading.service(loadingOptions)
+    }
     return config
   },
   (error) => {

@@ -1,10 +1,10 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
-
+import { getToken, getGuestToken } from '@/utils/cookie'
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
     name: 'index',
-    redirect: '/explore',
+    redirect: '/age-verification',
     component: async () => await import('@/layout/m-layout/m-layout.vue'),
     children: [
       {
@@ -55,6 +55,12 @@ const routes: RouteRecordRaw[] = [
         component: async () => await import('@/views/chat/characters-detail/characters-detail.vue'),
         meta: { title: 'Chat' },
       },
+      {
+        path: 'setting',
+        name: 'setting',
+        component: async () => await import('@/views/setting/user-setting.vue'),
+        meta: { title: 'Setting' },
+      },
     ],
   },
   {
@@ -81,6 +87,12 @@ const routes: RouteRecordRaw[] = [
     component: async () => await import('@/views/email-auth/email-auth.vue'),
     meta: { title: 'Email Auth' },
   },
+  {
+    path: '/age-verification',
+    name: 'age-verification',
+    component: async () => await import('@/views/age-verification/age-verification.vue'),
+    meta: { title: 'Age Verification' },
+  },
 ]
 
 const router = createRouter({
@@ -96,6 +108,12 @@ router.afterEach((to, from) => {
         query: from.query,
       })
     }
+  }
+
+  if (to.path !== '/age-verification' && !getToken() && !getGuestToken()) {
+    router.replace({
+      path: '/age-verification',
+    })
   }
 })
 

@@ -1,13 +1,13 @@
 <template>
   <div class="layout">
     <MHeader />
-    <div :class="['container', customClass]">
+    <div class="container">
       <div class="aside">
         <MMenu />
       </div>
-      <div class="content-wrap">
+      <div class="content-wrap scroll-bar">
         <router-view></router-view>
-        <MFooter v-if="!$isMobile" />
+        <MFooter v-if="!$isMobile && currentRoute !== 'chat' && currentRoute !== 'setting'" />
       </div>
     </div>
   </div>
@@ -25,12 +25,15 @@ const {
 } = getCurrentInstance()
 
 const router = useRouter()
-const customClass = computed(() => {
-  const routerName = router.currentRoute.value.name
-  if (globalProperties.isMobile) {
-    return ''
-  }
-
-  return routerName === 'chat' || routerName === 'subscription' ? 'h' : 'm-h'
+const currentRoute = computed(() => {
+  return router.currentRoute.value.name
 })
+// const customClass = computed(() => {
+//   const routerName = router.currentRoute.value.name
+//   if (globalProperties.isMobile) {
+//     return ''
+//   }
+
+//   return routerName === 'chat' || routerName === 'subscription' ? 'h' : 'm-h'
+// })
 </script>

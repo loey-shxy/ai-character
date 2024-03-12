@@ -1,27 +1,19 @@
 .pc {
-  min-height: 100vh;
+  height: 100vh;
   overflow: hidden;
   // 布局
   .layout {
-    min-height: 100vh;
+    height: 100vh;
     .container {
       display: flex;
-      &.h {
-        height: calc(100vh - 87px);
-      }
-      &.m-h {
-        min-height: calc(100vh - 87px);
-      }
+      height: calc(100% - 87px);
       .aside {
         width: 103px;
         border-right: 1px solid #363636;
       }
       .content-wrap {
         flex: 1;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        min-height: calc(100vh - 87px);
+        height: 100%;
       }
     }
   }
@@ -29,6 +21,7 @@
   .page-header {
     height: 87px;
     padding-left: 30px;
+    box-sizing: border-box;
     &__left {
       .logo {
         width: 32px;
@@ -186,22 +179,20 @@
         .title {
           font-size: 20px;
           font-weight: 500;
-          line-height: 26px;
+          line-height: 20px;
         }
         .link-group {
           margin-top: 16px;
           display: flex;
           flex-wrap: wrap;
+          flex-direction: column;
           .link-item {
             font-size: 18px;
             line-height: 23px;
-            margin-top: 26px;
+            margin-top: 16px;
             a {
               color: rgba(255, 255, 255, 0.6);
               text-decoration: none;
-            }
-            &:nth-of-type(2n) {
-              margin-left: 20px;
             }
             &.legals {
               margin-left: 0;
@@ -340,10 +331,50 @@
       }
     }
   }
+  .age-verification {
+    background: #131313;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    &__content {
+      width: 873px;
+      height: 553px;
+      background: #242529;
+      border-radius: 20px;
+      border: 1px solid #44454C;
+      padding: 0 70px;
+      box-sizing: border-box;
+      h1 {
+        font-size: 40px;
+        color: #fff;
+        text-align: center;
+        margin-top: 120px;
+      }
+      .desc {
+        font-size: 18px;
+        margin-top: 48px;
+        text-align: center;
+      }
+      .footer {
+        margin-top: 52px;
+        display: flex;
+        justify-content: space-between;
+        padding: 0 12px;
+        .el-button {
+          width: 344px;
+          height: 56px;
+          line-height: 56px;
+          font-size: 20px;
+          border-radius: 10px;
+        }
+      }
+    }
+  }
   // explore
   .explore {
     // position: relative;
-    min-height: calc(100% - 280px);
+    // min-height: calc(100% - 280px);
     &__model-type {
       height: 388px;
       padding: 111px 0 107px 0;
@@ -408,6 +439,8 @@
   // gallery
   .gallery {
     padding: 0 65px 65px 47px;
+    box-sizing: border-box;
+    min-height: calc(100% - 280px);
     .gallery-list {
       margin-top: 22px;
       &__type-name {
@@ -436,7 +469,7 @@
   // chat
   .chat {
     display: flex;
-    height: calc(100% - 280px);
+    height: 100%;
     .model-list__wrap {
       width: 27%;
       box-sizing: border-box;
@@ -771,6 +804,8 @@
   // terms of service
   .terms-service {
     padding: 97px;
+    min-height: calc(100% - 280px);
+    box-sizing: border-box;
     &__header {
       padding-bottom: 13px;
       h1 {
@@ -913,6 +948,131 @@
         height: 51px;
         font-size: 20px;
         border-radius: 10px;
+      }
+    }
+  }
+  .setting {
+    box-sizing: border-box;
+    h1 {
+      text-align: center;
+      margin-top: 47px;
+      font-size: 44px;
+    }
+    .user-info_container,
+    .sub-plan_container {
+      width: 1276px;
+      margin: 85px auto auto;
+      position: relative;
+      border-radius: 20px;
+      border: 1px solid transparent;
+      border: 1px solid #363636;
+    }
+    .user-info_container {
+      background: url(/src/assets/image/setting1.png);
+      background-size: cover;
+      background-position: center;
+      .user-avatar {
+        position: absolute;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 125px;
+        height: 125px;
+        border-radius: 50%;
+        border: 1px solid rgba(255,255,255,0.6);
+        background-color: rgba(255,255,255,0.6);
+        z-index: 2;
+        overflow: hidden;
+      }
+      .user-info {
+        display: grid;
+        padding: 98px 46px 40px;
+        grid-template-columns: repeat(5, 1fr);
+        grid-column-gap: 10px;
+        border-bottom: 1px solid #363636;
+        &_item {
+          background: #141414;
+          border-radius: 10px;
+          border: 1px solid #262626;
+          box-sizing: border-box;
+          padding: 20px;
+          .info-label {
+            color: #999;
+            font-size: 18px;
+            line-height: 21px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            .edit-icon {
+              width: 33px;
+              height: 33px;
+              cursor: pointer;
+            }
+          }
+          .info-value {
+            font-size: 19px;
+            line-height: 29px;
+            margin-top: 6px;
+          }
+        }
+      }
+      .delete-account_container {
+        padding: 40px 60px 46px;
+        box-sizing: border-box;
+        display: flex;
+        position: relative;
+        .title, .desc {
+          font-size: 18px;
+          line-height: 21px;
+        }
+        .desc {
+          color: #999;
+          margin-left: 6px;
+        }
+        .delete-icon {
+          position: absolute;
+          right: 60px;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 143px;
+          height: 34px;
+          border-radius: 10px;
+          border: 1px solid #999999;
+          font-size: 16px;
+          color: #999;
+          text-align: center;
+          line-height: 32px;
+          cursor: pointer;
+        }
+      }
+    }
+    .sub-plan_container {
+      background: url(/src/assets/image/setting2.png);
+      background-size: cover;
+      background-position: center;
+      .plan-title {
+        padding: 40px 56px;
+        border-bottom: 1px solid #363636;
+        .current-plan {
+          display: flex;
+          font-size: 24px;
+          .value {
+            color: #E75175;
+            margin-left: 15px;
+          }
+        }
+      }
+      .sub-info {
+        padding: 33px 56px 46px;
+        display: flex;
+        &_item {
+          &:not(:first-child) {
+            margin-left: 90px;
+          }
+          font-size: 20px;
+          .info-label {
+            color: #999;
+          }
+        }
       }
     }
   }

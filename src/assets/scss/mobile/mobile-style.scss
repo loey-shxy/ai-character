@@ -1,5 +1,5 @@
 .mobile {
-  min-height: 100vh;
+  height: 100vh;
   .layout {
     min-height: 100vh;
   
@@ -50,7 +50,6 @@
         bottom: 111px;
         left: 0;
         width: 100%;
-        overflow: hidden;
       }
     }
   }
@@ -189,6 +188,47 @@
       font-size: 30px;
       font-weight: 600;
       width: 200px;
+    }
+  }
+  .age-verification {
+    background: #131313;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    &__content {
+      width: 85%;
+      height: 553px;
+      background: #242529;
+      border-radius: 20px;
+      border: 1px solid #44454C;
+      padding: 0 70px;
+      box-sizing: border-box;
+      h1 {
+        font-size: 40px;
+        color: #fff;
+        text-align: center;
+        margin-top: 120px;
+      }
+      .desc {
+        font-size: 18px;
+        margin-top: 48px;
+        text-align: center;
+      }
+      .footer {
+        margin-top: 52px;
+        display: flex;
+        justify-content: space-between;
+        padding: 0 12px;
+        .el-button {
+          width: 240px;
+          height: 56px;
+          line-height: 56px;
+          font-size: 16px;
+          border-radius: 10px;
+        }
+      }
     }
   }
   // explore
@@ -723,6 +763,122 @@
       .el-icon {
         width: 60px;
         height: 60px;
+      }
+    }
+  }
+  .setting {
+    padding-bottom: 78px;
+    h1 {
+      text-align: center;
+      margin-top: 45px;
+    }
+    .user-info_container,
+    .sub-plan_container {
+      width: 688px;
+      margin: 120px auto auto;
+      position: relative;
+      border-radius: 20px;
+      border: 1px solid transparent;
+      border: 1px solid #363636;
+    }
+    .user-info_container {
+      background: url(/src/assets/image/setting1-m.png);
+      background-size: cover;
+      .user-avatar {
+        position: absolute;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 125px;
+        height: 125px;
+        border-radius: 50%;
+        border: 1px solid rgba(255,255,255,0.6);
+        background-color: rgba(255,255,255,0.6);
+        z-index: 2;
+        overflow: hidden;
+      }
+      .user-info {
+        padding: 82px 46px 40px;
+        border-bottom: 1px solid #363636;
+        &_item {
+          background: #141414;
+          border-radius: 20px;
+          border: 1px solid #262626;
+          box-sizing: border-box;
+          padding: 29px 40px;
+          width: 609px;
+          margin-top: 16px;
+          .info-label {
+            color: #999;
+            font-size: 26px;
+            line-height: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            .edit-icon {
+              width: 50px;
+              height: 50px;
+              cursor: pointer;
+            }
+          }
+          .info-value {
+            font-size: 28px;
+            line-height: 42px;
+            margin-top: 6px;
+          }
+        }
+      }
+      .delete-account_container {
+        padding: 37px 40px;
+        box-sizing: border-box;
+        .title, .desc {
+          font-size: 25px;
+          line-height: 30px;
+        }
+        .desc {
+          color: #999;
+        }
+        .delete-icon {
+          width: 100%;
+          height: 70px;
+          border-radius: 10px;
+          border: 1px solid #999999;
+          font-size: 28px;
+          color: #999;
+          text-align: center;
+          line-height: 32px;
+          cursor: pointer;
+          margin-top: 36px;
+          line-height: 70px;
+          text-align: center;
+        }
+      }
+    }
+    .sub-plan_container {
+      background: url(/src/assets/image/setting2-m.png);
+      background-size: cover;
+      .plan-title {
+        padding: 40px 56px;
+        border-bottom: 1px solid #363636;
+        .current-plan {
+          display: flex;
+          font-size: 32px;
+          .value {
+            color: #E75175;
+            margin-left: 15px;
+          }
+        }
+      }
+      .sub-info {
+        padding: 50px 42px 58px;
+        display: flex;
+        &_item {
+          width: 50%;
+          font-size: 28px;
+          .info-label {
+            color: #999;
+            margin-bottom: 6px;
+          }
+        }
       }
     }
   }

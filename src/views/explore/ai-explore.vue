@@ -58,7 +58,6 @@
         </div>
       </div>
     </div>
-    <AgeVerification v-model:visible="ageVisible" />
   </div>
 </template>
 <script setup lang="ts">
@@ -67,8 +66,6 @@ import { getModelListApi, signInApi } from '@/apis'
 import { ModelItem, ModelListQuery, ModelType } from '@/interface'
 import { useRouter } from 'vue-router'
 import { setGuestToken, hasToken, getGuestToken } from '@/utils/cookie'
-import AgeVerification from '@/components/age-verification/age-verification.vue'
-
 const isLogin = computed(() => {
   return hasToken()
 })
@@ -95,7 +92,6 @@ const guestLogin = async () => {
   }
 }
 
-const ageVisible = ref(false)
 // ai characters query
 const total = ref(0)
 const params = reactive<ModelListQuery>({
@@ -114,7 +110,9 @@ const getModelList = async () => {
 watch(
   () => params,
   () => {
-    getModelList()
+    if (isGuestLogin.value || isLogin.value) {
+      getModelList()
+    }
   },
   {
     deep: true,
@@ -156,9 +154,8 @@ onMounted(async () => {
     }
   })
 
-  if (!isLogin.value && !isGuestLogin.value) {
+  if (!isGuestLogin.value && !isLogin.value) {
     guestLogin()
-    ageVisible.value = true
   }
 
   if (isGuestLogin.value || isLogin.value) {
@@ -168,14 +165,14 @@ onMounted(async () => {
 
 const router = useRouter()
 const createSession = (model: ModelItem) => {
-  if (isLogin.value) {
-    router.push({
-      name: 'chat',
-      query: {
-        id: model.id,
-      },
-    })
-  }
+  // if (isLogin.value) {
+  router.push({
+    name: 'chat',
+    query: {
+      id: model.id,
+    },
+  })
+  // }
 }
 </script>
 <style lang="scss"></style>
